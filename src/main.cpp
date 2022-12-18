@@ -22,7 +22,7 @@
 
              
 #define ONBOARD_LED_BLUE        GPIO_NUM_2 //2
-#define CAN_TX_GPIO             GPIO_NUM_23  //33
+#define CAN_TX_GPIO             GPIO_NUM_23  //33 pin en prototipo cambiar readme.md de github
 #define CAN_RX_GPIO             GPIO_NUM_22  //32
 
 #define VERSION                 "2022_12_16_versionV1.0"
