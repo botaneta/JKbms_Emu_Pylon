@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta http-equiv="refresh" content="3000">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <title>jk CAN pylon</title>
+    <link href="style.css" rel="stylesheet" />
+    
+</head>
+<body>
+    <input type="hidden"  id="opcionmenu" name="opcionmenu" value="%OPCION_MENU%">
+    <div class="cabecera">
+        <img src="logoBlack68.png"> 
+        <div class="menu">
+            
+            <a href="#" id="clickHome" onclick="clickHome();">Home</a>
+            <a href="#" id="clickAjustes" onclick="clickAjustes();">Settings</a>
+            <a href="#" id="clickReglas" onclick="clickReglas();">Rules</a>
+            <a href="#" id="clickAcercade" onclick="clickAcercade();">About</a>
+            
+        </div>
+    </div>
+
+    <div class="cuerpo">
+    <div id="estado_div"  style="display: none;">
+        
+        <h2 class="h2estado">ESTADO DE BATERIA</h2>
+            <div id="estadoBateria">
+                <div id="datosbasicos">
+                    <div id="estado_bateria">
+                        <table id='tabla_estado'>
+                            <tr><td id="t0"></td><td id="t1"></td><td id="t2"></td></tr>
+                            <tr><td id="batt_vol"></td><td id="batt_amp"><td id="batt_power"></td></tr>
+                            <tr><td id="soc"></td><td id="soh"></td><td id="batt_cycle"></td></tr>
+                            <tr><td id="cell_voltage_average"></td><td id="delta_cell_voltage"></td><td id="batt_ah_count"></td></tr>
+                        </table>
+                    
+                        <table id="tabla_celdas">
+                            <tr><td id="celda1"></td><td id="celda9"></td><td id="celda17"></td></tr>
+                            <tr><td id="celda2"></td><td id="celda10"></td><td id="celda18"></td></tr>
+                            <tr><td id="celda3"></td><td id="celda11"></td><td id="celda19"></td></tr>
+                            <tr><td id="celda4"></td><td id="celda12"></td><td id="celda20"></td></tr>
+                            <tr><td id="celda5"></td><td id="celda13"></td><td id="celda21"></td></tr>
+                            <tr><td id="celda6"></td><td id="celda14"></td><td id="celda22"></td></tr>
+                            <tr><td id="celda7"></td><td id="celda15"></td><td id="celda23"></td></tr>
+                            <tr><td id="celda8"></td><td id="celda16"></td><td id="celda24"></td></tr>
+                        </table>
+                    </div>
+                </div> 
+                <div id="estadoAlarmas">
+                    <ul id="lista_alarmas">
+                        <li class="alarm" id="comRS485_JK">RS485-JK</li>
+                        <li class="alarm" id="habilitarCarga">Charged</li>
+                        <li class="alarm" id="habilitarDescarga">Discharged</li>
+                        <li class="alarm" id="lowCapacity">Low<br> Capacity</li>
+                        <li class="alarm" id="mosfet_overtemp">MOSFET<br> OverTemp</li>
+                        <li class="alarm" id="OVC">Charged <br>OverVoltage </li>
+                        <li class="alarm" id="OCC">Charged <br>OverCurrent</li>
+                        <li class="alarm" id="OVcell">Cell<br> OverVoltage</li>
+                        <li class="alarm" id="UVD">Discharged <br>UnderVoltage</li>
+                        <li class="alarm" id="OCD">Discharged <br>OverCurrent</li>
+                        <li class="alarm" id="UVcell">Cell <br>UnderVoltage</li>
+                        <li class="alarm" id="HighTemp">Battery <br>HighTemp</li>
+                        <li class="alarm" id="LowTemp">Battery <br>LowTemp</li>
+                        <li class="alarm" id="ODeltaCell">Cells <br>OverDelta</li>
+                    </ul>
+
+                </div>
+
+            </div>
+        
+    </div>
+    
+    <div id="ajustes_div" style="display: none;">    
+        <div class="checkbox_div">
+           
+            <h3>Configura los servicios de comunicación  y pulsa guardar</h3>
+        </div>
+        <form action="salvarrs485" name="" method="post">
+             <div class="checkbox_div">
+                <label for="check_enable_jkrs485">JK RS485</label>
+                <input class="checkbox" type="checkbox" id="check_enable_jkrs485" name="check-enable-jkrs485"  value="1" %CHECK_JKRS485%><br>
+                
+                <input type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>	
+        <form action="salvarcanbus"  name="" method="POST">
+            <div class="checkbox_div">
+                <label for="check_enable_can">CAN BUS</label>
+                <input class="checkbox" type="checkbox" id="check_enable_can" name="check-enable-can"  value="1"  %CHECK_CAN%><br>
+                <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>
+        <form action="salvarpylonHV"  name="" method="POST">
+            <div class="checkbox_div">
+                
+                
+                <label for="check-enable-pylonHV">Emulated Pylontech HV</label>
+                <input class="checkbox" type="checkbox" id="check-enable-pylonHV" name="check-enable-pylonHV"  value="1"  %CHECK_PYLON_HV%><br>
+                <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>
+        <form action="salvarmodbusinversor" name="" method="POST">
+            <div class="checkbox_div">
+                <label for="check_enable_modbus">MODBUS</label>
+                <input class="checkbox" type="checkbox" id="check_enable_modbus" name="check-enable-modbus"  value="1" %CHECK_MODBUS%>
+                <br>
+                <label for="ipmodbus">Ip Modbus Ingeteam Storage 1Play TL M  </label>
+                <input class="" type="text" value="%IP_MODBUS%" id="ipmodbus" name="ipmodbus" pattern="([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})" title="ejemplo: 192.168.0.25">
+                <br>
+                <label for="portmodbus">Puerto Modbus Ingeteam Storage 1Play TL M</label>
+				<input class=""  type="number" value="%PORT_MODBUS%" id="portmodbus" name="portmodbus" min="1" max="65535" title="Rango de 1 a 65535">
+				<br>
+				<input class="button" type="submit" value="Guardar">	
+            </div>			
+		</form>	
+        <br>    
+        <form action="salvarserialdebug" method="POST">
+            <div class="checkbox_div">
+                <label for="check_enable_serial">Serial debug
+                    <input class="checkbox" type="checkbox" id="check_enable_serial" name="check-enable-serial"  value="1"  %CHECK_SERIAL% >
+                </label></br>
+                <label for="check_enable_serial1">Serial debug1
+                    <input class="checkbox" type="checkbox" id="check_enable_serial1" name="check-enable-serial1"  value="1"  %CHECK_SERIAL1% >
+                </label></br>
+                <label for="check_enable_serial2">Serial debug2
+                    <input class="checkbox" type="checkbox" id="check_enable_serial2" name="check-enable-serial2"  value="1"  %CHECK_SERIAL2% >
+                </label></br>
+                <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>
+        <form action="salvarmqtt" method="POST">
+            <div class="checkbox_div">
+                <label for="check_enable_mqtt">MQTT</label>
+                <input class="checkbox" type="checkbox" id="check_enable_mqtt" name="check-enable-mqtt"  value="1" %CHECK_MQTT%><br>
+                <br>
+                <label for="ipmqtt">IP Mqtt server  </label>
+                <input type="text" value="%IP_MQTT%" id="ipmqtt" name="ipmqtt"  pattern="([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})" title="ejemplo: 192.168.0.25">
+                </br>
+                <label for="portmqtt">Puerto Mqtt server</label>
+                <input type="number" name="portmqtt" id="portmqtt" value="%PORT_MQTT%" min="1" max="65535" title="Rango de 1 a 65535">
+                <br>
+                <label for="topicmqtt">Tópico</label>
+                <input type="text" name="topicmqtt" id="topicmqtt" value="%TOPIC_MQTT%" maxlength="64">
+                </br>
+                <label for="usermqtt">Usuario</label>
+                <input type="text" name="usermqtt" id="usermqtt" value="%USER_MQTT%" maxlength="32">
+                </br>
+                <label for="passinfluxdb">Contraseña</label>
+                <input type="password" name="passmqtt" id="passmqtt" value="%PASS_MQTT%" maxlength="32">
+                <br>
+                <input class="button" type="submit" value="Guardar">
+
+            </div>
+        </form>
+        <br>
+
+
+        <form action="salvarinfluxdb" name="" method="POST">
+            <div class="checkbox_div">
+                <label for="check_enable_influx">InfluxDB</label>
+                <input class="checkbox" type="checkbox" id="check_enable_influx" name="check-enable-influx"  value="1" %CHECK_INFLUXDB%><br>
+                <br>
+                <label for="ipinfluxdb">IP Influxdb server  </label>
+                <input type="text" value="%IP_INFLUXDB%" id="ipinfluxdb" name="ipinfluxdb"  pattern="([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})" title="ejemplo: 192.168.0.25">
+                </br>
+                <label for="databaseinfluxdb">Base de datos</label>
+                <input type="text" name="databaseinfluxdb" id="databaseinfluxdb" value="%DATABASE_INFLUXDB%">
+                <br>
+                <label for="userinfluxdb">Usuario</label>
+                <input type="text" name="userinfluxdb" id="userinfluxdb" value="%USER_INFLUXDB%">
+                </br>
+                <label for="passinfluxdb">Contraseña</label>
+                <input type="password" name="passinfluxdb" id="passinfluxdb" value="%PASS_INFLUXDB%">
+                <br>
+                <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>    
+            
+            
+        
+    </div>   
+    
+    <div id="reglas_div" style="display:none;">
+        <h3>Configuración de rampas  carga y descarga</h3>
+        <form>
+            <div class="checkbox_div">
+                <label for="tensionMaximaCarga">Tensión máxima carga&nbsp;&emsp;&emsp;
+                <input type="number" value="%TENSION_MAX_CARGA%" id="tensionMaximaCarga" readonly size="5">V</label><br>
+                <label for="tensionMinimaDescarga">Tensión minima descarga&emsp;
+                <input type="number" value="%TENSION_MIN_DESCARGA%" id="tensionMinimaDescarga" readonly size="5">V</label>
+            </div>    
+        </form>
+        <br>
+        <form action="salvarlimitessoc" name="" method="POST">
+            <div class="checkbox_div">
+               <label for="stopcargasoc">Stop  carga  SOC&emsp;&emsp;&emsp;&nbsp;
+               <input type="number" value="%STOP_CARGA_SOC%" id="stop" name="stopcargasoc" min="0" max="101" size="4">&#37;</label><br>
+               <label for="restartcargasoc">Restart carga SOC&emsp;&emsp;
+               <input type="number" value="%RESTART_CARGA_SOC%" id="restartcargasoc" name="restartcargasoc" min="0" max=100 size="4">&#37;</label><br>
+               <label for="restartdescargasoc">Restart descarga SOC&ensp;
+               <input type="number" value="%RESTART_DESCARGA_SOC%" id="restartdescargasoc" name="restartdescargasoc" min="0" max="100" size="4">&#37;</label><br>
+               <label for="stopdescargasoc">Stop descarga SOC&nbsp;&emsp;&ensp;
+               <input type="number" value="%STOP_DESCARGA_SOC%" id="stopdescargasoc" name="stopdescargasoc" min="0" max="100" size="4">&#37;</label><br>
+               <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>
+        <form action="salvarrampacarga" name="" method="POST">
+            <div class="checkbox_div">
+               <label for="corrienteMaximaCarga">Intesidad de carga&emsp;&emsp;
+               <input type="number" value="%CORRIENTE_MAX_CARGA%" id="corrienteMaximaCarga" readonly size="5">A</label><br>
+               <label for="corriente80soc">Carga desde 80&#37;SOC
+               <input type="number" value="%CORRIENTE_80SOC%" id="corriente80soc" name="corriente80soc" min="0" size="5">A</label><br>
+               <label for="corriente85soc">Carga desde 85&#37;SOC
+               <input type="number" value="%CORRIENTE_85SOC%" id="corriente85soc" name="corriente85soc" min="0" size="5">A</label><br>
+               <label for="corriente90soc">Carga desde 90&#37;SOC
+               <input type="number" value="%CORRIENTE_90SOC%" id="corriente90soc" name="corriente90soc" min="0" size="5">A</label><br>
+               <label for="corriente95soc">Carga desde 95&#37;SOC
+               <input type="number" value="%CORRIENTE_95SOC%" id="corriente95soc" name="corriente95soc" min="0" size="5">A</label><br>
+               <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>
+        <form action="salvarrampadescarga" name="" method="POST">
+            <div class="checkbox_div">
+               <label for="corrienteMaximaDescarga">Intesidad de descarga&emsp;&emsp;
+               <input type="number" value="%CORRIENTE_MAX_DESCARGA%" id="corrienteMaximaDescarga" readonly size="5">A</label><br>
+               <label for="corriente20soc">Descarga desde 20&#37;SOC
+               <input type="number" value="%CORRIENTE_20SOC%" id="corriente20soc" name="corriente20soc" min="0" size="5">A</label><br>
+               <label for="corriente15soc">Descarga desde 15&#37;SOC
+               <input type="number" value="%CORRIENTE_15SOC%" id="corriente15soc" name="corriente15soc" min="0" size="5">A</label><br>
+               <label for="corriente10soc">Descarga desde 10&#37;SOC
+               <input type="number" value="%CORRIENTE_10SOC%" id="corriente10soc" name="corriente10soc" min="0" size="5">A</label><br>
+               <label for="corriente05soc">Descarga desde &nbsp; 5&#37;SOC
+               <input type="number" value="%CORRIENTE_05SOC%" id="corriente05soc" name="corriente05soc" min="0" size="5">A</label><br>
+               <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>
+        <form action="salvarcalibracionsoc" name="" method="POST">
+            <div class="checkbox_div">
+             <h3>Calibración SOC %CELL_CHEMICAL%</h3>   
+            <table>
+                <tr><td>SOC &emsp;0&#37;</td><td><input type="number" name="voltagecell00soc" value="%VOL_CELL_00SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC &emsp;1&#37;</td><td><input type="number" name="voltagecell01soc" value="%VOL_CELL_01SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC &emsp;2&#37;</td><td><input type="number" name="voltagecell02soc" value="%VOL_CELL_02SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC &emsp;3&#37;</td><td><input type="number" name="voltagecell03soc" value="%VOL_CELL_03SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC &emsp;4&#37;</td><td><input type="number" name="voltagecell04soc" value="%VOL_CELL_04SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC &emsp;5&#37;</td><td><input type="number" name="voltagecell05soc" value="%VOL_CELL_05SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC &emsp;7&#37;</td><td><input type="number" name="voltagecell07soc" value="%VOL_CELL_07SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      10&#37;</td><td><input type="number" name="voltagecell10soc" value="%VOL_CELL_10SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      15&#37;</td><td><input type="number" name="voltagecell15soc" value="%VOL_CELL_15SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      80&#37;</td><td><input type="number" name="voltagecell80soc" value="%VOL_CELL_80SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      85&#37;</td><td><input type="number" name="voltagecell85soc" value="%VOL_CELL_85SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      90&#37;</td><td><input type="number" name="voltagecell90soc" value="%VOL_CELL_90SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      95&#37;</td><td><input type="number" name="voltagecell95soc" value="%VOL_CELL_95SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      96&#37;</td><td><input type="number" name="voltagecell96soc" value="%VOL_CELL_96SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      97&#37;</td><td><input type="number" name="voltagecell97soc" value="%VOL_CELL_97SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      98&#37;</td><td><input type="number" name="voltagecell98soc" value="%VOL_CELL_98SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC      99&#37;</td><td><input type="number" name="voltagecell99soc" value="%VOL_CELL_99SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>SOC     100&#37;</td><td><input type="number"name="voltagecell100soc" value="%VOL_CELL_100SOC%" min="2000" max="5000" size="6">mV</td></tr>
+                <tr><td>Password </td><td><input type="password" name="passwordcalibracion"  ></td></tr>
+                <tr><td rowspan="2"><input type="submit" value="Guardar"></td></tr>
+            </table>
+            </div>
+        </form>
+        
+    </div>
+ 
+
+    <div id="acercade_div" style="display:none;">
+    </div>
+
+
+
+
+
+
+</div>
+</body>
+<script type="text/javascript" src="./principal.js"></script>
+</html>

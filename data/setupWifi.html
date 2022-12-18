@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jk CAN pylon</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style type="text/css">
+           
+            @viewport {  width: device-width ;  zoom: 1.0 ;}
+            .page {
+                width: 300px;
+                margin: 0 auto 0 auto;
+                background-color: #727e8d;
+                font-family: sans-serif;
+                padding: 22px;
+                border-radius: 2em;
+                color: white;
+            }
+
+            .page h1{
+                border-bottom: 6px solid #4caf50;
+                        margin-bottom: 50px;
+            }
+            
+            label {
+                min-width: 120px;
+                display: inline-block;
+                padding: 22px 0 22px 0;
+            }
+
+            .campostexto{
+                background-color: #727e8d;
+                color:white;
+                border: none;
+                border-bottom:white solid 1px;;
+            }
+
+        </style> 
+    </head>
+    <body >
+        <div class="page">
+            <form class='box' id='captive' method='get' action='/savedatawifi'>
+                <h1>JK-PYLON</h1>     
+                <div class='form_description'>
+                    <p>1º Seleccione una SSID</p>
+                    <p>2º Indroduzca el password</p>
+                    <p>3º Pulse Guardar</p>
+                    <p>4º Espere a que reinicie y acceda a %HOST_SERVER% para una configuración más avanzada.</p>
+                </div>
+                    <label class='description' for='wifiConfigureds'>SSID:</label>
+                    <div>
+                        <select id='wifis' name='wifiConfigureds' class="campostexto">
+                            <option disabled selected class="select-field">   Seleccione una red   </option>
+                            %SSID%
+                        </select>
+                    </div>
+                    <br>
+                    <label class='description' for='password'>Password:</label>
+                    <div>
+                        <input id='password' name='password' class="campostexto" type='password' maxlength='63' value=''/>
+                    </div>
+                    <br>
+                    <input id='saveForm' class='button_text' type='submit' name='submit' value='Guardar' style="" />
+            </form>
+        </div>
+    </body>
+</html>

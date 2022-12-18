@@ -1,0 +1,205 @@
+:root {
+    --color-green: #00a878;
+    --color-red: #fe5e41;
+    --color-button: #fdffff;
+    --color-black: #000;
+}
+
+.cabecera{
+    background:#2E4053;
+    color: whitesmoke;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    
+    width:100%;
+    display:flow-root;
+    overflow:overlay
+     
+}
+
+.cabecera img{
+    float:left;
+    margin: 1em 1em 1em 1em;
+
+    
+    
+}
+
+
+.cabecera .menu{
+    
+    padding: 0.5em;
+    padding-top: 2.5em;
+    float:right;   
+    /*border: 1px solid red;*/
+   
+}
+
+.cabecera .menu a{
+    top: 50%;
+    color:rgb(196, 196, 196);
+    font-weight: bold;
+    font-size: large;
+    text-decoration: none;
+    
+    padding-left: 2em;
+    padding-right: 0.5em;
+    text-align: center;
+
+    /* border: 1px solid red; */
+}
+
+.cabecera .menu a:hover{   
+    color: white;
+}
+
+.cuerpo{
+    width:auto;
+}
+
+.checkbox_div {
+    
+    padding-left: 1.5em;
+    padding-bottom: 1.5em;   
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+body{
+    background-color: #313131;
+    color:#e8e8e8;
+}
+
+#estadoBateria{
+    margin-top:3em;
+    display:flex;
+    flex-direction:row-reverse;
+    justify-content:center;
+}
+
+#estadoBateria img{
+    margin-top: 40vh;
+}
+
+
+
+
+
+#tabla_estado, tr, td{
+    border:none;
+    
+}
+
+
+#tabla_estado{
+    margin:auto;
+ 
+}
+
+
+.h2estado{
+    margin: 1em auto 1em auto;
+    padding: 0 1em 0 1em;
+    width: fit-content;
+    border-bottom: 4px solid green;
+    border-top: 2px dotted green;
+    border-left: 2px dotted green;
+    border-right: 2px dotted green;
+    border-radius: 1em;
+}
+
+#tabla_estado tr{  
+    display: table;
+    contain:layout;
+    border-radius: 0.5em;
+    padding: 0;
+}
+
+#tabla_estado td{
+    width: 6em;
+    background: green;
+    font-size: 1.1em;
+    border: 1px dotted white;
+    padding: 0.2em;
+    border-radius:0.5em;
+    text-align: center;
+}
+
+#tabla_celdas{
+  
+    border: none;
+    margin:auto;
+    
+}
+
+#tabla_celdas caption{
+    border-bottom: 2px solid greenyellow;
+    font-size: 1.25em;
+    font-weight:bold;
+    color:greenyellow;
+    
+}
+
+#tabla_celdas tr{
+    display:flex;
+     margin: 5px auto 5px auto ;
+     
+}
+
+#tabla_celdas td{
+    width: 6em;
+    background: lightslategray;
+     border: 1px dotted greenyellow;
+    padding: 0.2em ;
+    margin:0.25em;
+    border-radius:0.5em;
+    text-align: center;
+   
+}
+
+#lista_alarmas li{
+    list-style: none;
+    background: lightslategray;
+    border: 1px dotted white;
+    border-radius: 0.5em;
+    margin:0.5em;
+    text-align:center;
+    
+}
+ 
+
+form {
+    border: 1px dotted greenyellow;
+    border-radius:1em;
+    width:300px;
+    margin: auto;
+
+}
+
+#reglas_div input[type='number']{
+    width: 45px;
+} 
+
+#reglas_div label{
+    display:block;
+}
+
+#reglas_div label:first-child {
+  padding-top: 1em;
+}
+
+
+#reglas_div h3{
+    width:300px;
+    margin: 1em auto;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#reglas_div input[type='submit']{
+    border-radius: 0.8em;
+    padding: 0.3em 1em 0.3em 1em;
+    font-size:0.9em;
+    font-family: Arial, Helvetica, sans-serif;
+       
+    
+    
+}
