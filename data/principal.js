@@ -78,20 +78,20 @@ function rellenarDatosBateria(jsondoc){
 	Array.from(list_alarm).forEach(element => {
 		element.style.backgroundColor="lightslategray";
 	});
-	if(jsondoc["habilitarCarga"]=="true")document.getElementById("habilitarCarga").style.backgroundColor="green";
-	if(jsondoc["habilitarDescarga"]=="true")document.getElementById("habilitarDescarga").style.backgroundColor="green";
-	if(jsondoc["lowCapacity"]=="true")document.getElementById("lowCapacity").style.backgroundColor="red";
-	if(jsondoc["mosfet_overtemp"]==="true")document.getElementById("mosfet_overtemp").style.backgroundColor="red";
-	if(jsondoc["OVC"]=="true")document.getElementById("OVC").style.backgroundColor="red";
-	if(jsondoc["OCC"]=="true")document.getElementById("OCC").style.backgroundColor="red";
-	if(jsondoc["OVcell"]=="true")document.getElementById("OVcell").style.backgroundColor="red";
-	if(jsondoc["UVD"]=="true")document.getElementById("UVD").style.backgroundColor="red";
-	if(jsondoc["OCD"]=="true")document.getElementById("OCD").style.backgroundColor="red";
-	if(jsondoc["UVcell"]=="true")document.getElementById("UVcell").style.backgroundColor="red"; 
-	if(jsondoc["HighTemp"]=="true")document.getElementById("HighTemp").style.backgroundColor="red";
-	if(jsondoc["LowTemp"]=="true")document.getElementById("LowTemp").style.backgroundColor="red";
-	if(jsondoc["ODeltaCell"]=="true")document.getElementById("ODeltaCell").style.backgroundColor="red";
-	if(jsondoc["comRS485_JK"] == "true")document.getElementById("comRS485_JK").style.backgroundColor="red";
+	if(jsondoc["habilitarCarga"]==true)document.getElementById("habilitarCarga").style.backgroundColor="green";
+	if(jsondoc["habilitarDescarga"]==true)document.getElementById("habilitarDescarga").style.backgroundColor="green";
+	if(jsondoc["lowCapacity"]==true)document.getElementById("lowCapacity").style.backgroundColor="red";
+	if(jsondoc["mosfet_overtemp"]==true)document.getElementById("mosfet_overtemp").style.backgroundColor="red";
+	if(jsondoc["OVC"]==true)document.getElementById("OVC").style.backgroundColor="red";
+	if(jsondoc["OCC"]==true)document.getElementById("OCC").style.backgroundColor="red";
+	if(jsondoc["OVcell"]==true)document.getElementById("OVcell").style.backgroundColor="red";
+	if(jsondoc["UVD"]==true)document.getElementById("UVD").style.backgroundColor="red";
+	if(jsondoc["OCD"]==true)document.getElementById("OCD").style.backgroundColor="red";
+	if(jsondoc["UVcell"]==true)document.getElementById("UVcell").style.backgroundColor="red"; 
+	if(jsondoc["HighTemp"]==true)document.getElementById("HighTemp").style.backgroundColor="red";
+	if(jsondoc["LowTemp"]==true)document.getElementById("LowTemp").style.backgroundColor="red";
+	if(jsondoc["ODeltaCell"]==true)document.getElementById("ODeltaCell").style.backgroundColor="red";
+	if(jsondoc["comRS485_JK"] == false)document.getElementById("comRS485_JK").style.backgroundColor="red";
 }
 
 

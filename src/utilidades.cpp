@@ -214,22 +214,22 @@ void parseJK_JSON(DynamicJsonDocument &docjson, JK_bms_battery_info * jkbms, Con
         // voltageCells.add(celda);  ya esta agregado al array al crearlo
                 
     }
-    docjson["comRS485_JK"]=config->errorComunicacionJK? "true" : "false";
-    docjson["OCC"]=jkbms->battery_alarms.charging_overcurrent? "true" : "false";
-    docjson["OVC"]=jkbms->battery_alarms.charging_overvoltage? "true" : "false";
-    docjson["OCD"]=jkbms->battery_alarms.discharging_overcurrent? "true" : "false";
-    docjson["UVD"]=jkbms->battery_alarms.discharging_undervoltage? "true" : "false";
-    docjson["OVcell"]=jkbms->battery_alarms.cell_overvoltage? "true" : "false";
-    docjson["UVcell"]=jkbms->battery_alarms.cell_undervoltage? "true" : "false";
-    docjson["ODeltaCell"]=jkbms->battery_alarms.cell_pressure_difference? "true" : "false";
-    docjson["HighTemp"]=jkbms->battery_alarms.battery_over_temperature? "true" : "false";
-    docjson["LowTemp"]=jkbms->battery_alarms.battery_low_temperature? "true" : "false";
-    docjson["lowCapacity"]=jkbms->battery_alarms.low_capacity? "true":"false";
-    docjson["mosfet_overtemp"]=jkbms->battery_alarms.power_tube_overtemperature? "true":"false";
+    docjson["comRS485_JK"]=config->errorComunicacionJK;
+    docjson["OCC"]=jkbms->battery_alarms.charging_overcurrent;
+    docjson["OVC"]=jkbms->battery_alarms.charging_overvoltage;
+    docjson["OCD"]=jkbms->battery_alarms.discharging_overcurrent;
+    docjson["UVD"]=jkbms->battery_alarms.discharging_undervoltage;
+    docjson["OVcell"]=jkbms->battery_alarms.cell_overvoltage;
+    docjson["UVcell"]=jkbms->battery_alarms.cell_undervoltage;
+    docjson["ODeltaCell"]=jkbms->battery_alarms.cell_pressure_difference;
+    docjson["HighTemp"]=jkbms->battery_alarms.battery_over_temperature;
+    docjson["LowTemp"]=jkbms->battery_alarms.battery_low_temperature;
+    docjson["lowCapacity"]=jkbms->battery_alarms.low_capacity;
+    docjson["mosfet_overtemp"]=jkbms->battery_alarms.power_tube_overtemperature;
     docjson["cell_ah"]=jkbms->battery_cell_capacity;
-    docjson["active_balancing"]=jkbms->active_balance? "true": "false";
-    docjson["habilitarCarga"]=config->habilitarCarga? "true":"false";
-    docjson["habilitarDescarga"]=config->habilitarDescarga? "true":"false";
+    docjson["active_balancing"]=jkbms->active_balance;
+    docjson["habilitarCarga"]=config->habilitarCarga;
+    docjson["habilitarDescarga"]=config->habilitarDescarga;
     //TODO massss
 }
 
