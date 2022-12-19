@@ -562,13 +562,6 @@ String PortalWeb::procesarSetupwifi(const String &var){
         texto="";
         String scanNetworks[15];
         int32_t rssiNetworks[15];
-        WiFi.scanNetworks();
-        Serial.print("Buscando redes...");
-        while(WiFi.scanComplete()< -1){
-           Serial.print(".");
-           delay(250);
-        }
-        Serial.println();
         for (int i = 0; i < 15; ++i) {
             if(WiFi.SSID(i) == "") { break; }
             scanNetworks[i] = WiFi.SSID(i);

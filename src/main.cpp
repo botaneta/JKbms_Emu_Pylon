@@ -248,6 +248,8 @@ void wifiModeAp(){
   WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
   WiFi.softAP(configuracion.hostName);
   IPAddress myIP = WiFi.softAPIP();
+  Serial.print("Buscando redes...\n");
+  WiFi.scanNetworks(true); //busca en segundo plano
   delay(250);
   Serial.printf("Configurado punto de acceso con IP: %s\n", myIP.toString().c_str());
   Serial.printf("Configurado punto de acceso con SSID: %s\n", configuracion.hostName);
@@ -356,6 +358,7 @@ void setup(){
   //MQTT
   if (configuracion.wifiConfigured==true){ 
     setupMqtt();
+    Serial.println("Configurado servicio MQTT");
   }
   
 }
