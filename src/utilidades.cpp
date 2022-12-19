@@ -1,8 +1,7 @@
 #include <Arduino.h>
-#include "jk_bms_485.h"
-#include <StreamString.h>
-#include <string.h>
+#include "utilidades.h"
 #include <sstream>
+
 
 
 
@@ -181,6 +180,58 @@ String bufferToString(String text, uint8_t * buffer){
     return text;      
 }
 
+void parseJK_JSON(DynamicJsonDocument &docjson, JK_bms_battery_info * jkbms, Config * config){
+    
+    docjson["ID"]=                  jkbms->ID;
+    docjson["low_capacity_value"]=  jkbms->low_capacity_alarm_value;
+    docjson["batt_vol"] =           jkbms->battery_status.battery_voltage;
+    docjson["batt_amp"]=            jkbms->battery_status.battery_current;
+    docjson["mosfet_temp"]=         jkbms->battery_status.power_tube_temperature;
+    docjson["temp1"]=               jkbms->battery_status.sensor_temperature_1;
+    docjson["temp2"]=               jkbms->battery_status.sensor_temperature_2;
+    docjson["soc"]=                 jkbms->battery_status.battery_soc;
+    docjson["cycles"]=              jkbms->battery_status.battery_cycles;
+    docjson["charge_amp_limit"]=    jkbms->battery_limits.battery_charge_current_limit;
+    docjson["charge_vol_limit"]=    jkbms->battery_limits.battery_charge_voltage;
+    docjson["discharge_amp_limit"]= jkbms->battery_limits.battery_discharge_current_limit;
+    docjson["discharge_vol_limit"]= jkbms->battery_limits.battery_discharge_voltage;
+    docjson["batt_ah_count"]=       jkbms->battery_status.battery_cycle_capacity;
+    docjson["cell_voltage_average"]=jkbms->cell_Vavrg;
+    docjson["cell_number_vmin"]=    jkbms->cell_number_vmin;
+    docjson["cell_number_vmax"]=    jkbms->cell_number_vmax;
+    docjson["delta_cell_voltage"]=  jkbms->delta_cell_voltage;
+    docjson["number_cells"]=        jkbms->cells_number;
+    docjson["soh"]=                 jkbms->battery_status.battery_soh;
+
+   
+    int8_t numeroCeldas   =        jkbms->cells_number;
+    JsonArray voltageCells= docjson.createNestedArray("voltage_cells");
+    JsonObject celda;
+    for(int i=0;  i < numeroCeldas; i++){
+        celda=voltageCells.createNestedObject();
+        celda["numero"]= jkbms->cells_voltage[i].cell_number;
+        celda["voltaje"]=jkbms->cells_voltage[i].cell_voltage;
+        // voltageCells.add(celda);  ya esta agregado al array al crearlo
+                
+    }
+    docjson["comRS485_JK"]=config->errorComunicacionJK? "true" : "false";
+    docjson["OCC"]=jkbms->battery_alarms.charging_overcurrent? "true" : "false";
+    docjson["OVC"]=jkbms->battery_alarms.charging_overvoltage? "true" : "false";
+    docjson["OCD"]=jkbms->battery_alarms.discharging_overcurrent? "true" : "false";
+    docjson["UVD"]=jkbms->battery_alarms.discharging_undervoltage? "true" : "false";
+    docjson["OVcell"]=jkbms->battery_alarms.cell_overvoltage? "true" : "false";
+    docjson["UVcell"]=jkbms->battery_alarms.cell_undervoltage? "true" : "false";
+    docjson["ODeltaCell"]=jkbms->battery_alarms.cell_pressure_difference? "true" : "false";
+    docjson["HighTemp"]=jkbms->battery_alarms.battery_over_temperature? "true" : "false";
+    docjson["LowTemp"]=jkbms->battery_alarms.battery_low_temperature? "true" : "false";
+    docjson["lowCapacity"]=jkbms->battery_alarms.low_capacity? "true":"false";
+    docjson["mosfet_overtemp"]=jkbms->battery_alarms.power_tube_overtemperature? "true":"false";
+    docjson["cell_ah"]=jkbms->battery_cell_capacity;
+    docjson["active_balancing"]=jkbms->active_balance? "true": "false";
+    docjson["habilitarCarga"]=config->habilitarCarga? "true":"false";
+    docjson["habilitarDescarga"]=config->habilitarDescarga? "true":"false";
+    //TODO massss
+}
 
 
 

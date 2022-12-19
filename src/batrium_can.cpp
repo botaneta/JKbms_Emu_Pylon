@@ -41,6 +41,7 @@ uint8_t * parseJK_message_0x01(uint8_t * buffer, JK_bms_battery_info * jkbms){
     buffer[7]=celdaMax;     
     return buffer;
 }
+
 /* Mensaje temepratura de celda max, medio, min y sus números  TX FREQ:1000mSg*/
 uint8_t * parseJK_message_0x02(uint8_t * buffer, JK_bms_battery_info * jkbms){
     int8_t t1=jkbms->battery_status.sensor_temperature_1;

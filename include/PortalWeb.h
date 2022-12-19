@@ -23,7 +23,7 @@ class PortalWeb {
     
     static void setupAccessPoint(AsyncWebServer * webserver,  Config  * config, JK_bms_battery_info * jk_bms);
     
-    static void setScanNetworks(String scanNetworks[], int32_t rssiNetworks[]);
+    
     static void loadConfigFromEEPROM();
     static void saveConfigIntoEEPROM();
     static bool checksumEEPROM();
@@ -64,19 +64,18 @@ class PortalWeb {
     static String procesarReglas(const String &var);
     static String procesarAcercade(const String &var);
     
+    
   
     
 
   private:
-    static  void parseJK_JsonDocument(DynamicJsonDocument &docjson);
-    //static  DynamicJsonDocument * _jsonDoc;
+    
     static  JK_bms_battery_info * _jk_bms;
     static  Config * _config;
     static  String networks;
     static  AsyncWebServer  *_server;
    
-    static  String  * _scanNetworks;
-    static  int32_t * _rssiNetworks;
+    
     
 };
     

@@ -5,23 +5,22 @@
 #include "batrium_can.h"
 #include "jk_bms_485.h"
 #include "utilidades.h"
+#include "PortalWeb.h"
 
 
 #define ONBOARD_LED_BLUE        GPIO_NUM_2 //2
 #define FREQ_MUESTREO           3 //cada 3segundos
-
+const TickType_t delayMuestreo = (1000 * FREQ_MUESTREO) / portTICK_PERIOD_MS; //peticiones cada 1000msg * muestreo
 
 //----------FUNCIONES DE TAREAS----------------------// 
 
 void peticionrs485_task(void * parameters){
-  const TickType_t xDelay = (1000 * FREQ_MUESTREO) / portTICK_PERIOD_MS; //peticiones cada 1000msg * muestreo
-  
   while(true){
     timerWrite((hw_timer_t *)parameters, 0); // reset timer (feed watchdog)
     if(configuracion.comunicarJKrs485){
       Request_JK_Battery_485_Status_Frame(); 
     } 
-    vTaskDelay(xDelay );  //cada 3 segundos
+    vTaskDelay(delayMuestreo);  //cada 3 segundos
   }  
 }
 
@@ -433,6 +432,30 @@ void enviarCANpylonHVinfoSystem(bool ID_29bits=false){
     send_canbus_message(0x732, parseJK_message_0x4220(buffer, &jk_bms_battery_info), 8, ID_29bits);
     send_canbus_message(0x733, parseJK_message_0x4230(buffer, &jk_bms_battery_info), 8, ID_29bits);
     send_canbus_message(0x734, parseJK_message_0x4240(buffer, &jk_bms_battery_info), 8, ID_29bits); 
+  }
+}
+
+void enviarDatosMqtt_task(void * parameters){
+  
+  while(true){
+    if(configuracion.comunicarMQTT && WiFi.isConnected()){
+      if(mqtt.connected()){
+        String payload="";
+        DynamicJsonDocument docjson(4096);
+        parseJK_JSON(docjson, &jk_bms_battery_info, &configuracion);
+        int size=serializeJson(docjson, payload);
+        mqtt.publish(configuracion.topicmqtt, 1, true, payload.c_str());
+      }else{
+        IPAddress ipmqtt(configuracion.ipmqtt[0], configuracion.ipmqtt[1], configuracion.ipmqtt[2], configuracion.ipmqtt[3]);
+        mqtt.setCredentials(configuracion.usermqtt, configuracion.passmqtt);
+        mqtt.setServer(ipmqtt, configuracion.portmqtt);
+        mqtt.connect();
+      }
+    }else{
+      mqtt.clearQueue();
+      mqtt.disconnect();
+    }
+    vTaskDelay(delayMuestreo);  
   }
 }
 

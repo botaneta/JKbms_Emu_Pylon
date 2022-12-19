@@ -12,6 +12,8 @@ void configuracionInicial(){
     configuracion.comunicarCAN=false;
     configuracion.consoleLog=false;
     configuracion.comunicarSerialDebug=false;
+    configuracion.comunicarSerialDebug1=false;
+    configuracion.comunicarSerialDebug2=false;
     configuracion.comunicarMQTT=false;
     configuracion.comunicarINFLUXDB=false;
     configuracion.comunicarMODBUS=false;
@@ -26,7 +28,7 @@ void configuracionInicial(){
     configuracion.bateria.cargado_total=false;
     configuracion.bateria.intensidad_carga.soc_80=100;
     configuracion.bateria.intensidad_carga.soc_85=50;
-    configuracion.bateria.intensidad_carga.soc_90=15;
+    configuracion.bateria.intensidad_carga.soc_90=20;
     configuracion.bateria.intensidad_carga.soc_95=2;
     configuracion.bateria.intensidad_descarga.soc_20=50;
     configuracion.bateria.intensidad_descarga.soc_15=25;

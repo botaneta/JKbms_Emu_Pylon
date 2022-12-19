@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <WiFi.h>
+#include <AsyncMqttClient.h>
 #include "freertos/task.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
@@ -25,8 +26,7 @@ extern uint8_t bufferStream[512];   //cambiar a 512 pruebas reales
 
 extern uint8_t bufferReceiver[512];  
 
-extern bool infojk;
-
+extern AsyncMqttClient mqtt;
 
 
 
@@ -43,7 +43,6 @@ extern TaskHandle_t  capturarSerial2PushCola_handle;
 extern TaskHandle_t  parseaSerialToJk_bms_battery_info_handle;
 extern TaskHandle_t  parpadeo_led_handle;
 extern TaskHandle_t  imprimeDatos_taskhandle_handle;
-
 extern TaskHandle_t  reset_configuracion_handle;
 
 extern SemaphoreHandle_t xMutex;
@@ -66,6 +65,7 @@ void parpadeoLed_task(void * parameters);
 void resetConfiguracion_task(void * parameters);
 void envioCAN_task(void * parameters);
 void recibirCAN_task(void * parameters);
+void enviarDatosMqtt_task(void * parameters);
 
 //funciones auxiliares
 /** Actualiza los permisos de carga y descarga para el inversor en funcion del soc*/

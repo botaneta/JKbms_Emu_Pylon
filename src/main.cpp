@@ -17,7 +17,8 @@
 #include "jk_bms_485.h"
 #include "tareas.h"
 #include <ModbusClientTCPasync.h>
-#include <ArduinoJson.h> 
+#include <ArduinoJson.h>
+#include <AsyncMqttClient.h> 
 
 
              
@@ -39,13 +40,10 @@ uint8_t bufferStream[512];
 uint8_t bufferReceiver[512];  
 
 
-String scanNetworks[15];
-int32_t rssiNetworks[15];
-uint8_t scanDoneCounter = 0;
-
 
 DNSServer dnsServer;
 AsyncWebServer webserver(80);
+AsyncMqttClient mqtt;
 
 
 //Manejadores de tareas concurrentes
@@ -59,6 +57,7 @@ TaskHandle_t  parseaSerialToJk_bms_battery_info_handle=NULL;
 TaskHandle_t  parpadeo_led_handle=NULL;
 TaskHandle_t  reset_configuracion_handle=NULL;
 TaskHandle_t  imprimeDatos_taskhandle_handle=NULL;
+TaskHandle_t  enviarDatosMqtt_handle=NULL;
 
 
 //Cola de mensajes entre tareas concurrentes
@@ -89,6 +88,10 @@ void IRAM_ATTR resetModule(){
   delay(1000);
   ESP.restart();
 }
+
+
+
+
 
 
 //CAN BUS
@@ -146,6 +149,14 @@ void setupModbus(){
  // MB.connect() //conectar otro server
 }
 
+//MQTT
+void  setupMqtt(){
+  IPAddress ipMqtt(configuracion.ipmqtt[0], configuracion.ipmqtt[1], configuracion.ipmqtt[2], configuracion.ipmqtt[3]);
+  mqtt.setServer(ipMqtt, configuracion.portmqtt);
+  mqtt.setCredentials(configuracion.usermqtt, configuracion.passmqtt);
+  mqtt.connect();
+}
+
 
 
 
@@ -188,27 +199,11 @@ void setupTareasYColas(){
   Serial.println("Creada tarea recibir datos CANBUS");
   delay(100);
   
+  xTaskCreate(enviarDatosMqtt_task, "enviar_mqtt", 3024, NULL, 2, &enviarDatosMqtt_handle);
+  Serial.println("Creada tarea enviar datos MQTT");
+  delay(100);
 }
 
-
-
-void buildWifiArray(String scanNetworks[], int32_t rssiNetworks[]){
-    WiFi.scanNetworks();
-    for (int i = 0; i < 15; ++i) {
-      if(WiFi.SSID(i) == "") { break; }
-      scanNetworks[i] = WiFi.SSID(i);
-      rssiNetworks[i] = (int8_t)WiFi.RSSI(i);
-      int quality=0;
-       if (rssiNetworks[i] <= -100) {
-            quality = 0;
-        } else if (rssiNetworks[i] >= -50) {
-            quality = 100;
-        } else {
-            quality = 2 * (rssiNetworks[i] + 100);
-        }
-      log_printf("SSID %i - %s (%d%%, %d dBm)\n", i, scanNetworks[i].c_str(), quality, rssiNetworks[i]);
-    }
-}
 
 
 
@@ -217,6 +212,7 @@ void wifiModeStation() {
   // WiFi.mode(WIFI_OFF);
   WiFi.mode(WIFI_STA);
   // Connect
+  
   Serial.printf("Conectando a la WIFI: %s pass: %s\n", configuracion.ssid1, configuracion.pass1);
   WiFi.begin(configuracion.ssid1, configuracion.pass1);
   // Wait
@@ -229,6 +225,7 @@ void wifiModeStation() {
     if(contador%10==0)Serial.print('-');
     if(contador>=100){
       configuracion.wifiConfigured=false;
+
       configuracionSalvarEEPROM();
       EEPROM.end();
       Serial.println("Imposible conectar con red wifi, reiniciando.");
@@ -248,15 +245,13 @@ void wifiModeStation() {
 
 void wifiModeAp(){
   WiFi.mode(WIFI_AP);
-  buildWifiArray(scanNetworks, rssiNetworks);
-  delay(500);
   WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
   WiFi.softAP(configuracion.hostName);
   IPAddress myIP = WiFi.softAPIP();
   delay(250);
   Serial.printf("Configurado punto de acceso con IP: %s\n", myIP.toString().c_str());
-  Serial.printf("Configurado punto de acceso con SSID: %s\n", WiFi.getHostname());
-  PortalWeb::setScanNetworks(scanNetworks, rssiNetworks);
+  Serial.printf("Configurado punto de acceso con SSID: %s\n", configuracion.hostName);
+  
   if(dnsServer.start(53, "*", myIP)){
     Serial.println("Configurado DNS-Server");
   }else{
@@ -357,9 +352,10 @@ void setup(){
     setupTareasYColas();
     delay(300); 
   }
-  //MODBUS
+  
+  //MQTT
   if (configuracion.wifiConfigured==true){ 
-    //setupModbus();
+    setupMqtt();
   }
   
 }
@@ -370,19 +366,10 @@ void loop(){
   timerWrite(watchDogTimer, 0); // reset timer (feed watchdog)
   /////////////////////////////////////
  
-
   if(configuracion.wifiConfigured==false){
       dnsServer.processNextRequest();
   }
-  
-    
-    //Serial.println("HACER ALGO");  
-
-  
-
- 
+ //Serial.println("HACER ALGO");  
   delay(200);
-
-    
 
 }

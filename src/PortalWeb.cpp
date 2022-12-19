@@ -2,18 +2,18 @@
 #include "PortalWeb.h"
 #include "configuracion.h"
 #include "SPIFFS.h"
+#include "utilidades.h"
 #include <EEPROM.h>
 #include <Preferences.h>
 #include <ArduinoJson.h> 
 
 
-String              * PortalWeb::_scanNetworks;
-int32_t             * PortalWeb::_rssiNetworks;
+
 AsyncWebServer      * PortalWeb::_server;
 Config              * PortalWeb::_config;
 JK_bms_battery_info * PortalWeb::_jk_bms;
 
-extern DynamicJsonDocument docjson;
+
 
 
 
@@ -55,10 +55,7 @@ uint8_t PortalWeb::create_checksum_EEPROM(){
 
 
 
-void PortalWeb::setScanNetworks(String   scanNetworks[], int32_t   rssiNetworks[]){
-   _scanNetworks=scanNetworks;
-   _rssiNetworks=rssiNetworks;
-}
+
 
 
 
@@ -71,7 +68,7 @@ void PortalWeb::paginaPrincipal(AsyncWebServerRequest *request){
 
 
 void PortalWeb::handleRoot(AsyncWebServerRequest *request){
-    if(_config->comunicarSerialDebug || true)Serial.printf("PeticiónWeb: %s\n", request->url() );
+    if(_config->comunicarSerialDebug )Serial.printf("PeticiónWeb: %s\n", request->url() );
     if(_config->wifiConfigured==false){  
         Serial.println("Redirigiendo a página configuración wifi");    
         request->redirect("/setupWifi.html");
@@ -425,7 +422,7 @@ String PortalWeb::procesarPrincipal(const String &var){
 void PortalWeb::estadoActualBateria(AsyncWebServerRequest *request){
     AsyncResponseStream *response=  request->beginResponseStream("application/json"); //modificar size por defecto  1460
     DynamicJsonDocument docjson(4096);
-    parseJK_JsonDocument(docjson);
+    parseJK_JSON(docjson, &jk_bms_battery_info, &configuracion);
     String textojson="";
     int size=serializeJson(docjson, textojson);
     if(_config->comunicarSerialDebug){
@@ -439,57 +436,6 @@ void PortalWeb::estadoActualBateria(AsyncWebServerRequest *request){
 }
 
 
-void PortalWeb::parseJK_JsonDocument(DynamicJsonDocument &docjson){
-    docjson["ID"]=                  _jk_bms->ID;
-    docjson["low_capacity_value"]=  _jk_bms->low_capacity_alarm_value;
-    docjson["batt_vol"] =           _jk_bms->battery_status.battery_voltage;
-    docjson["batt_amp"]=            _jk_bms->battery_status.battery_current;
-    docjson["mosfet_temp"]=         _jk_bms->battery_status.power_tube_temperature;
-    docjson["temp1"]=               _jk_bms->battery_status.sensor_temperature_1;
-    docjson["temp2"]=               _jk_bms->battery_status.sensor_temperature_2;
-    docjson["soc"]=                 _jk_bms->battery_status.battery_soc;
-    docjson["cycles"]=              _jk_bms->battery_status.battery_cycles;
-    docjson["charge_amp_limit"]=    _jk_bms->battery_limits.battery_charge_current_limit;
-    docjson["charge_vol_limit"]=    _jk_bms->battery_limits.battery_charge_voltage;
-    docjson["discharge_amp_limit"]= _jk_bms->battery_limits.battery_discharge_current_limit;
-    docjson["discharge_vol_limit"]= _jk_bms->battery_limits.battery_discharge_voltage;
-    docjson["batt_ah_count"]=       _jk_bms->battery_status.battery_cycle_capacity;
-    docjson["cell_voltage_average"]=_jk_bms->cell_Vavrg;
-    docjson["cell_number_vmin"]=    _jk_bms->cell_number_vmin;
-    docjson["cell_number_vmax"]=    _jk_bms->cell_number_vmax;
-    docjson["delta_cell_voltage"]=  _jk_bms->delta_cell_voltage;
-    docjson["number_cells"]=        _jk_bms->cells_number;
-    docjson["soh"]=                 _jk_bms->battery_status.battery_soh;
-
-   
-    int8_t numeroCeldas   =        _jk_bms->cells_number;
-    JsonArray voltageCells= docjson.createNestedArray("voltage_cells");
-    JsonObject celda;
-    for(int i=0;  i < numeroCeldas; i++){
-        celda=voltageCells.createNestedObject();
-        celda["numero"]= _jk_bms->cells_voltage[i].cell_number;
-        celda["voltaje"]=_jk_bms->cells_voltage[i].cell_voltage;
-        // voltageCells.add(celda);  ya esta agregado al array al crearlo
-                
-    }
-    docjson["comRS485_JK"]=_config->errorComunicacionJK? "true" : "false";
-    docjson["OCC"]=_jk_bms->battery_alarms.charging_overcurrent? "true" : "false";
-    docjson["OVC"]=_jk_bms->battery_alarms.charging_overvoltage? "true" : "false";
-    docjson["OCD"]=_jk_bms->battery_alarms.discharging_overcurrent? "true" : "false";
-    docjson["UVD"]=_jk_bms->battery_alarms.discharging_undervoltage? "true" : "false";
-    docjson["OVcell"]=_jk_bms->battery_alarms.cell_overvoltage? "true" : "false";
-    docjson["UVcell"]=_jk_bms->battery_alarms.cell_undervoltage? "true" : "false";
-    docjson["ODeltaCell"]=_jk_bms->battery_alarms.cell_pressure_difference? "true" : "false";
-    docjson["HighTemp"]=_jk_bms->battery_alarms.battery_over_temperature? "true" : "false";
-    docjson["LowTemp"]=_jk_bms->battery_alarms.battery_low_temperature? "true" : "false";
-    docjson["lowCapacity"]=_jk_bms->battery_alarms.low_capacity? "true":"false";
-    docjson["mosfet_overtemp"]=_jk_bms->battery_alarms.power_tube_overtemperature? "true":"false";
-    docjson["cell_ah"]=_jk_bms->battery_cell_capacity;
-    docjson["active_balancing"]=_jk_bms->active_balance? "true": "false";
-    docjson["habilitarCarga"]=_config->habilitarCarga? "true":"false";
-    docjson["habilitarDescarga"]=_config->habilitarDescarga? "true":"false";
-    //TODO massss
-}
 
 String PortalWeb::procesarAjustes(const String &var){
     if(var == "OPCION_MENU") return "ajustes";
@@ -611,17 +557,39 @@ String PortalWeb::procesarComandos(const String &var){
 
 String PortalWeb::procesarSetupwifi(const String &var){
     String texto="";
+
     if(var == "SSID"){
-        if(_scanNetworks!=NULL){
-            char tmp[80];
-            for (int i = 0; i < 15; ++i) {
-                if (_scanNetworks[i] == "") { break; }
-                sprintf(tmp,"%s (%d dBm)", _scanNetworks[i].c_str(), _rssiNetworks[i]);
-                texto += (" <option value='" + _scanNetworks[i] + "'>" + String(tmp) + "</option>");
-            }
+        texto="";
+        String scanNetworks[15];
+        int32_t rssiNetworks[15];
+        WiFi.scanNetworks();
+        Serial.print("Buscando redes...");
+        while(WiFi.scanComplete()< -1){
+           Serial.print(".");
+           delay(250);
         }
-    Serial.println(texto);
+        Serial.println();
+        for (int i = 0; i < 15; ++i) {
+            if(WiFi.SSID(i) == "") { break; }
+            scanNetworks[i] = WiFi.SSID(i);
+            rssiNetworks[i] = (int8_t)WiFi.RSSI(i);
+            int quality=0;
+            if (rssiNetworks[i] <= -100) {
+                 quality = 0;
+             } else if (rssiNetworks[i] >= -50) {
+                 quality = 100;
+             } else {
+                 quality = 2 * (rssiNetworks[i] + 100);
+             }
+            log_printf("SSID %i - %s (%d%%, %d dBm)\n", i, scanNetworks[i].c_str(), quality, rssiNetworks[i]);
+            char tmp[80];
+            sprintf(tmp,"%s (%d dBm)", scanNetworks[i].c_str(), rssiNetworks[i]);
+            texto += (" <option value='" + scanNetworks[i] + "'>" + String(tmp) + "</option>");      
+        }
+        return texto;
     }
+
+
     return texto;
 }
 
