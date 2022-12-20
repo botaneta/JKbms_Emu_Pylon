@@ -67,7 +67,7 @@ function rellenarDatosBateria(jsondoc){
 	
 	for(let i=0; i<numeroCeldas; i++){
 		document.getElementById(array_celdas_id[i])
-			.innerText="Cell-"+(i+1)+":  "+jsondoc["voltage_cells"][i]["voltaje"] + "mV";
+			.innerText="Cell-"+(i+1)+":  "+jsondoc[array_celdas_id[i]] + "mV";
 		document.getElementById(array_celdas_id[i]).style.backgroundColor="lightslategray";	
 	}
 	if(numeroCeldas > 0){
@@ -91,7 +91,7 @@ function rellenarDatosBateria(jsondoc){
 	if(jsondoc["HighTemp"]==true)document.getElementById("HighTemp").style.backgroundColor="red";
 	if(jsondoc["LowTemp"]==true)document.getElementById("LowTemp").style.backgroundColor="red";
 	if(jsondoc["ODeltaCell"]==true)document.getElementById("ODeltaCell").style.backgroundColor="red";
-	if(jsondoc["comRS485_JK"] == false)document.getElementById("comRS485_JK").style.backgroundColor="red";
+	if(jsondoc["comRS485_JK"]==true)document.getElementById("comRS485_JK").style.backgroundColor="red";
 }
 
 

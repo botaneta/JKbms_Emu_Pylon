@@ -203,17 +203,13 @@ void parseJK_JSON(DynamicJsonDocument &docjson, JK_bms_battery_info * jkbms, Con
     docjson["number_cells"]=        jkbms->cells_number;
     docjson["soh"]=                 jkbms->battery_status.battery_soh;
 
-   
     int8_t numeroCeldas   =        jkbms->cells_number;
-    JsonArray voltageCells= docjson.createNestedArray("voltage_cells");
-    JsonObject celda;
     for(int i=0;  i < numeroCeldas; i++){
-        celda=voltageCells.createNestedObject();
-        celda["numero"]= jkbms->cells_voltage[i].cell_number;
-        celda["voltaje"]=jkbms->cells_voltage[i].cell_voltage;
-        // voltageCells.add(celda);  ya esta agregado al array al crearlo
-                
+        String clave="celda";
+        clave+=(i+1);
+        docjson[clave]=jkbms->cells_voltage[i].cell_voltage;                
     }
+
     docjson["comRS485_JK"]=config->errorComunicacionJK;
     docjson["OCC"]=jkbms->battery_alarms.charging_overcurrent;
     docjson["OVC"]=jkbms->battery_alarms.charging_overvoltage;
@@ -230,6 +226,8 @@ void parseJK_JSON(DynamicJsonDocument &docjson, JK_bms_battery_info * jkbms, Con
     docjson["active_balancing"]=jkbms->active_balance;
     docjson["habilitarCarga"]=config->habilitarCarga;
     docjson["habilitarDescarga"]=config->habilitarDescarga;
+
+    
     //TODO massss
 }
 
