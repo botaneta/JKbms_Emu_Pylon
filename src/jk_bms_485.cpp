@@ -91,6 +91,8 @@ void Request_JK_Battery_485_Status_Frame() {
 bool JK_Battery_485_Check_Frame_CRC(uint8_t *data, uint16_t frame_size) {
 	if (frame_size < 4) {
 		return false;
+	}else if(frame_size < 23){ // si es una respuesta a petición de escritura de parametro
+		return false;
 	}
 	
 	uint16_t data_len = (uint16_t)data[2] << 8 | data[2 + 1];
