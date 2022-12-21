@@ -1,5 +1,5 @@
 #include "pylon_can.h"
-#include  <string.h>
+
 
 
 
@@ -12,7 +12,6 @@
  * @return uint8_t* trama 8 bytes
  */
 uint8_t * parseJK_message_0x359(uint8_t * buffer, JK_bms_battery_info *jk_bms_battery_info){ 
-    // TODO test adaptar mejor con valores calculados aparte de la jk las proteccion sobretensioncorriente carga y descarga
 
     uint8_t data=0x00;
     //byte 0 protection table1
