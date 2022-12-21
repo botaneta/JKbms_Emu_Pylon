@@ -489,5 +489,15 @@ uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor)
 }
 
 
+void Request_JKBMS(uint8_t * buffer, uint16_t size){
+
+	for(int i=0; i<size; i++){
+		Serial2.write(buffer[i]);
+	}
+	Serial2.flush();
+	
+}
+
+
 
 

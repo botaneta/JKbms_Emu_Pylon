@@ -72,7 +72,7 @@ void parseoColaLecturaToJk_bms_battery_info_task(void * parameters){
     uint16_t contador=0;
     const TickType_t esperar2sg = 2000 / portTICK_PERIOD_MS;
     while(true){
-        //timerWrite((hw_timer_t *)parameters, 0); // reset timer (feed watchdog)
+        timerWrite((hw_timer_t *)parameters, 0); // reset timer (feed watchdog)
         uint32_t timestampActual=millis();
         if(xQueueReceive(colaPuertoSerie_handle, bufferReceiver , esperar2sg) ){
               Parse_JK_Battery_485_Status_Frame(bufferReceiver);

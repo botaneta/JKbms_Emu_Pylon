@@ -27,7 +27,7 @@ uint8_t * parseJK_message_0x359(uint8_t * buffer, JK_bms_battery_info *jk_bms_ba
     
     //byte 1 protection table2
     data=0x00;
-    if(configuracion.errorComunicacionJK) data = data | 0x80; // system error bit3
+    if(configuracion.errorComunicacionJK) data = data | 0x08; // system error bit3
     if(jk_bms_battery_info->battery_alarms.charging_overcurrent) data = data | 0x01;
     buffer[1]=data;
 
@@ -44,7 +44,7 @@ uint8_t * parseJK_message_0x359(uint8_t * buffer, JK_bms_battery_info *jk_bms_ba
 
     //byte 3 alarm table4
     data=0x00;
-    if(configuracion.errorComunicacionJK) data = data | 0x80; // system error bit3
+    if(configuracion.errorComunicacionJK) data = data | 0x08; // system error bit3
     if(jk_bms_battery_info->battery_alarms.charging_overcurrent )data = data | 0x01;
     buffer[3]=data;
     
