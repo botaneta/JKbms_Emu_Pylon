@@ -441,7 +441,7 @@ void Parse_JK_Battery_485_Status_Frame(uint8_t *data) {
 /**
  * @brief Experimental sin terminar, peticiones a JKBMS
  * 
- * @param buffer 
+ * @param buffer almenos 23bytes
  * @param direccion 
  * @param valor 
  * @return uint8_t 
@@ -489,7 +489,7 @@ uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor)
 }
 
 
-void Request_JKBMS(uint8_t * buffer, uint16_t size){
+void sendRequestJKBMS(uint8_t * buffer, uint16_t size){
 
 	for(int i=0; i<size; i++){
 		Serial2.write(buffer[i]);

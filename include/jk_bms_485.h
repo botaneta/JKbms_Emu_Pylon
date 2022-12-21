@@ -102,6 +102,6 @@ void Parse_JK_Battery_485_Status_Frame(uint8_t *data);
 bool  JK_bms_check_header(uint8_t  *data);
 
 uint8_t  crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor);
-
+void sendRequestJKBMS(uint8_t * buffer, uint16_t size);
 
 #endif /* INC_JK_BMS_485_H_ */

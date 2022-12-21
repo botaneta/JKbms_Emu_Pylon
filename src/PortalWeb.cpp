@@ -327,6 +327,18 @@ void PortalWeb::salvarlimitesSOC(AsyncWebServerRequest *request){
     request->redirect("/reglas");
 }
 
+void PortalWeb::salvarNivelSocBajo(AsyncWebServerRequest *request){
+    if(request->hasParam("nivelsocbajo",true)){
+        uint8_t nivelSOC=(uint8_t)request->getParam("nivelsocbajo", true)->value().toInt();
+        uint8_t buffer[23]={};
+        uint16_t size=crearTramaEscritura(buffer, 0xB1, nivelSOC);
+        sendRequestJKBMS(buffer, size);
+        if(configuracion.comunicarSerialDebug){
+            Serial.printf("Enviado SOC:%d nivel bajo batería\n", nivelSOC);
+        }       
+    }
+}
+
 void PortalWeb::salvarcalibracionSOC(AsyncWebServerRequest *request){
     if(request->hasParam("passwordcalibracion", true)){
         String password(request->getParam("passwordcalibracion",true)->value());
@@ -507,6 +519,7 @@ String PortalWeb::procesarReglas(const String &var){
     if(var == "RESTART_CARGA_SOC") return   String(_config->bateria.soc_min_restart_carga);
     if(var == "RESTART_DESCARGA_SOC")return String(_config->bateria.soc_max_restart_descarga);
     if(var == "STOP_DESCARGA_SOC")return    String(_config->bateria.soc_min_stop_descarga);
+    if(var == "NIVEL_SOC_BAJO")return       String(_jk_bms->low_capacity_alarm_value);
     if(var.startsWith("CORRIENTE")){
         if(var == "CORRIENTE_MAX_CARGA") return String(_jk_bms->battery_limits.battery_charge_current_limit);
         if(var == "CORRIENTE_80SOC") return     String(_config->bateria.intensidad_carga.soc_80);
