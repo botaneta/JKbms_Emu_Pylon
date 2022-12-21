@@ -121,15 +121,18 @@ bool  JK_bms_check_header(uint8_t  *data){
 	
 	if(data[0]==response_Status_header_start_frame[0]  
 		&& data[1]==response_Status_header_start_frame[1] 
-		&& sizedata >19 ){  //solo trama larga
+		&& sizedata >21 ){  //solo trama larga, ignorar respuesta de escrituras
 			return true;
 	}
 	// no es la trama que espero, muestrala
-	Serial.print("\nTRAMA RESPUESTA JK");
-	for(int i=0; i<sizedata; i++){
-		Serial.printf(": %02x", data[i]);
-		if(i > 128)break;
+	if(configuracion.comunicarSerialDebug2){
+		Serial.print("\nTRAMA RESPUESTA JK");
+		for(int i=0; i<sizedata; i++){
+			Serial.printf(": %02x", data[i]);
+			if(i > 128)break;
+		}
 	}
+	
 	return false;
 }
 
@@ -448,12 +451,14 @@ void Parse_JK_Battery_485_Status_Frame(uint8_t *data) {
  * @param valor 
  * @return uint8_t 
  */
-uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor){
+uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor, bool valor8bit=false){
 	//Start Frame  0x4E, 0x57,    2byte
-	buffer[0]=0x4E;   
+	uint8_t index=0;
+	buffer[0]=0x4E;  
 	buffer[1]=0x57; 
 	//longitud trama     2byte
-	buffer[2]=21u;  //21bytes desde el startframe
+	
+	buffer[2]=21u;  //21bytes (valor16bit) o 20bytes(valor8bit) desde el startframe
 	buffer[3]=0x00;	
 	// Id bms            4byte
 	buffer[4]=0x00;
