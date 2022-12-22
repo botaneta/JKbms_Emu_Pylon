@@ -331,12 +331,15 @@ void PortalWeb::salvarNivelSocBajo(AsyncWebServerRequest *request){
     if(request->hasParam("nivelsocbajo",true)){
         uint8_t nivelSOC=(uint8_t)request->getParam("nivelsocbajo", true)->value().toInt();
         uint8_t buffer[23]={};
-        uint16_t size=crearTramaEscritura(buffer, 0xB1, nivelSOC);
+        uint16_t size=crearTramaEscritura(buffer, 0xB1, nivelSOC,true);
         sendRequestJKBMS(buffer, size);
-        if(configuracion.comunicarSerialDebug){
-            Serial.printf("Enviado SOC:%d nivel bajo batería\n", nivelSOC);
+        if(configuracion.comunicarSerialDebug2){
+            Serial.printf("Enviado SOC:%d nivel bajo batería 0xB1::", nivelSOC);
+            for(int i=0; i<size; i++)Serial.printf(":%02x", buffer[i]);
+            Serial.println("\r");
         }       
     }
+    request->redirect("/reglas");
 }
 
 void PortalWeb::salvarcalibracionSOC(AsyncWebServerRequest *request){
@@ -684,6 +687,7 @@ void PortalWeb::setupAccessPoint(AsyncWebServer *webserver,  Config * config, JK
     _server->on("/salvarrampadescarga",HTTP_POST, salvarrampadescarga);
     _server->on("/salvarrampacarga", HTTP_POST, salvarrampacarga);
     _server->on("/salvarlimitessoc", HTTP_POST, salvarlimitesSOC);
+    _server->on("/salvarnivelsocbajo", HTTP_POST, salvarNivelSocBajo);
     _server->on("/salvarcalibracionsoc", HTTP_POST, salvarcalibracionSOC);
 
 }

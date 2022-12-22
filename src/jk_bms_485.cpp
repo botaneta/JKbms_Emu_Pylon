@@ -121,7 +121,7 @@ bool  JK_bms_check_header(uint8_t  *data){
 	
 	if(data[0]==response_Status_header_start_frame[0]  
 		&& data[1]==response_Status_header_start_frame[1] 
-		&& sizedata >21 ){  //solo trama larga, ignorar respuesta de escrituras
+		&& sizedata >21 ){  //solo trama larga, ignorar respuesta por escrituras
 			return true;
 	}
 	// no es la trama que espero, muestrala
@@ -451,15 +451,13 @@ void Parse_JK_Battery_485_Status_Frame(uint8_t *data) {
  * @param valor 
  * @return uint8_t 
  */
-uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor, bool valor8bit=false){
+uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor, bool valor8bit){
 	//Start Frame  0x4E, 0x57,    2byte
-	uint8_t index=0;
 	buffer[0]=0x4E;  
 	buffer[1]=0x57; 
-	//longitud trama     2byte
-	
-	buffer[2]=21u;  //21bytes (valor16bit) o 20bytes(valor8bit) desde el startframe
-	buffer[3]=0x00;	
+	//longitud trama     2byte  Bigendian
+	buffer[2]=0x00;  //21bytes (valor16bit) o 20bytes(valor8bit) desde el startframe
+	buffer[3]= valor8bit? 20u : 21u; 	
 	// Id bms            4byte
 	buffer[4]=0x00;
 	buffer[5]=0x00;
@@ -467,32 +465,48 @@ uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor,
 	buffer[7]=0x00;
 	//  comando   escritura 0x02
 	buffer[8]=0x02;
-	// fuente de la trama PC 0x03
+	// fuente de la trama PC 0x03, GPS 0x02
 	buffer[9]=0x03;
-	//tipo de transmisión  0=read  1=request/reply  2=BMS active upload(escribir)
-	buffer[10]=0x02;    // ¿¿¿¿¿¿  probar con cero  ???????
+	//tipo de transmisión  0=request  1=answer  
+	buffer[10]=0x00;    
 	// payload
 	buffer[11] = direccion;
-	buffer[12] = (valor >> 8) & 0xFF ;
-	buffer[13] = valor & 0xFF;
+	uint8_t index=12; //indice siguiente byte
+	//16 o 8bit?
+	if(valor8bit==false){
+		buffer[index] = (valor >> 8) & 0xFF ;
+		index++;
+	}
+	buffer[index] = valor & 0xFF;
+	index++;
 	//número de registro solicitud  4bytes
-	buffer[14]=0x00;
-	buffer[15]=0x00;
-	buffer[16]=0x00;
-	buffer[17]=0x00;
+	buffer[index]=0x00; 
+	index++;
+	buffer[index]=0x00; 
+	index++;
+	buffer[index]=0x20;
+	index++;
+	buffer[index]=0x01;
+	index++;
 	//end frame
-	buffer[18]=0x68;
+	buffer[index]=0x68;  //byte end frame to start frame=>checksum
+	index++;
 	//2bytes vacios
-	buffer[19]=0x00;
-	buffer[20]=0x00;
+	buffer[index]=0x00;
+	index++;
+	buffer[index]=0x00;
+	index++;
 	//checksum
 	uint16_t checksum=0;
-	for(int i =0; i < 21 ; i++){
+
+	for(int i =0; i < index ; i++){  //¿index-2?
 		checksum += buffer[i];
 	}
-	buffer[21]=(checksum >> 8) & 0xFF;
-	buffer[22]=checksum & 0xFF;
-	return 23;
+	buffer[index]=(checksum >> 8) & 0xFF;
+	index++;
+	buffer[index]=checksum & 0xFF;
+	index++;
+	return index;
 }
 
 
