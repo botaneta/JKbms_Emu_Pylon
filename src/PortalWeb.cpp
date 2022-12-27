@@ -277,35 +277,138 @@ void PortalWeb::salvarpylonHV(AsyncWebServerRequest *request){
 }
 
 void PortalWeb::salvarrampadescarga(AsyncWebServerRequest *request){
-    if(request->hasParam("corriente20soc", true)){
-        _config->bateria.intensidad_descarga.soc_20=request->getParam("corriente20soc", true)->value().toInt();
+   
+    if(request->hasParam("rampadescarga", true)){
+        if(request->getParam("rampadescarga" , true)->value().equals("rampaMV")){
+            _config->bateria.rampaDescarga_mV=true;
+        }else{
+            _config->bateria.rampaDescarga_mV=false;
+        }
     }
-    if(request->hasParam("corriente15soc", true)){
-        _config->bateria.intensidad_descarga.soc_15=request->getParam("corriente15soc", true)->value().toInt();
+
+    if(request->hasParam("regla1SOC", true)){
+        _config->bateria.rampaDescarga.norma[0].valor[SOC]=request->getParam("regla1SOC", true)->value().toInt();
     }
-    if(request->hasParam("corriente10soc", true)){
-        _config->bateria.intensidad_descarga.soc_10=request->getParam("corriente10soc", true)->value().toInt();
+    if(request->hasParam("regla1mV", true)){
+        _config->bateria.rampaDescarga.norma[0].valor[mV]=request->getParam("regla1mV", true)->value().toInt();
     }
-    if(request->hasParam("corriente05soc", true)){
-        _config->bateria.intensidad_descarga.soc_05=request->getParam("corriente05soc", true)->value().toInt();
+    if(request->hasParam("regla1Amp", true)){
+        _config->bateria.rampaDescarga.norma[0].valor[Amp]=request->getParam("regla1Amp", true)->value().toInt();
+    }
+
+
+    if(request->hasParam("regla2SOC", true)){
+        _config->bateria.rampaDescarga.norma[1].valor[SOC]=request->getParam("regla2SOC", true)->value().toInt();
+    }
+    if(request->hasParam("regla2mV", true)){
+        _config->bateria.rampaDescarga.norma[1].valor[mV]=request->getParam("regla2mV", true)->value().toInt();
+    }
+    if(request->hasParam("regla2Amp", true)){
+        _config->bateria.rampaDescarga.norma[1].valor[Amp]=request->getParam("regla2Amp", true)->value().toInt();
+    }
+
+
+    if(request->hasParam("regla3SOC", true)){
+        _config->bateria.rampaDescarga.norma[2].valor[SOC]=request->getParam("regla3SOC", true)->value().toInt();
+    }
+    if(request->hasParam("regla3mV", true)){
+        _config->bateria.rampaDescarga.norma[2].valor[mV]=request->getParam("regla3mV", true)->value().toInt();
+    }
+    if(request->hasParam("regla3Amp", true)){
+        _config->bateria.rampaDescarga.norma[2].valor[Amp]=request->getParam("regla3Amp", true)->value().toInt();
+    }
+
+
+    if(request->hasParam("regla4SOC", true)){
+        _config->bateria.rampaDescarga.norma[3].valor[SOC]=request->getParam("regla4SOC", true)->value().toInt();
+    }
+    if(request->hasParam("regla4mV", true)){
+        _config->bateria.rampaDescarga.norma[3].valor[mV]=request->getParam("regla4mV", true)->value().toInt();
+    }
+    if(request->hasParam("regla4Amp", true)){
+        _config->bateria.rampaDescarga.norma[3].valor[Amp]=request->getParam("regla4Amp", true)->value().toInt();
+    }
+
+
+    if(request->hasParam("regla5SOC", true)){
+        _config->bateria.rampaDescarga.norma[4].valor[SOC]=request->getParam("regla5SOC", true)->value().toInt();
+    }
+    if(request->hasParam("regla5mV", true)){
+        _config->bateria.rampaDescarga.norma[4].valor[mV]=request->getParam("regla5mV", true)->value().toInt();
+    }
+    if(request->hasParam("regla5Amp", true)){
+        _config->bateria.rampaDescarga.norma[4].valor[Amp]=request->getParam("regla5Amp", true)->value().toInt();
     }
     saveConfigIntoEEPROM();
     request->redirect("/reglas");
 }
 
 void PortalWeb::salvarrampacarga(AsyncWebServerRequest *request){
-    if(request->hasParam("corriente80soc", true)){
-        _config->bateria.intensidad_carga.soc_80=request->getParam("corriente80soc", true)->value().toInt();
+   
+
+    if(request->hasParam("rampacarga", true)){
+        if(request->getParam("rampacarga" , true)->value().equals("rampaMV")){
+            _config->bateria.rampaCarga_mV=true;
+        }else{
+            _config->bateria.rampaCarga_mV=false;
+        }
     }
-    if(request->hasParam("corriente85soc", true)){
-        _config->bateria.intensidad_carga.soc_85=request->getParam("corriente85soc", true)->value().toInt();
+
+
+    if(request->hasParam("regla1SOC", true)){
+        _config->bateria.rampaCarga.norma[0].valor[SOC]=request->getParam("regla1SOC", true)->value().toInt();
     }
-    if(request->hasParam("corriente90soc", true)){
-        _config->bateria.intensidad_carga.soc_90=request->getParam("corriente90soc", true)->value().toInt();
+    if(request->hasParam("regla1mV", true)){
+        _config->bateria.rampaCarga.norma[0].valor[mV]=request->getParam("regla1mV", true)->value().toInt();
     }
-    if(request->hasParam("corriente95soc", true)){
-        _config->bateria.intensidad_carga.soc_95=request->getParam("corriente95soc", true)->value().toInt();
+    if(request->hasParam("regla1Amp", true)){
+        _config->bateria.rampaCarga.norma[0].valor[Amp]=request->getParam("regla1Amp", true)->value().toInt();
     }
+
+
+    if(request->hasParam("regla2SOC", true)){
+        _config->bateria.rampaCarga.norma[1].valor[SOC]=request->getParam("regla2SOC", true)->value().toInt();
+    }
+    if(request->hasParam("regla2mV", true)){
+        _config->bateria.rampaCarga.norma[1].valor[mV]=request->getParam("regla2mV", true)->value().toInt();
+    }
+    if(request->hasParam("regla2Amp", true)){
+        _config->bateria.rampaCarga.norma[1].valor[Amp]=request->getParam("regla2Amp", true)->value().toInt();
+    }
+
+
+    if(request->hasParam("regla3SOC", true)){
+        _config->bateria.rampaCarga.norma[2].valor[SOC]=request->getParam("regla3SOC", true)->value().toInt();
+    }
+    if(request->hasParam("regla3mV", true)){
+        _config->bateria.rampaCarga.norma[2].valor[mV]=request->getParam("regla3mV", true)->value().toInt();
+    }
+    if(request->hasParam("regla3Amp", true)){
+        _config->bateria.rampaCarga.norma[2].valor[Amp]=request->getParam("regla3Amp", true)->value().toInt();
+    }
+
+
+    if(request->hasParam("regla4SOC", true)){
+        _config->bateria.rampaCarga.norma[3].valor[SOC]=request->getParam("regla4SOC", true)->value().toInt();
+    }
+    if(request->hasParam("regla4mV", true)){
+        _config->bateria.rampaCarga.norma[3].valor[mV]=request->getParam("regla4mV", true)->value().toInt();
+    }
+    if(request->hasParam("regla4Amp", true)){
+        _config->bateria.rampaCarga.norma[3].valor[Amp]=request->getParam("regla4Amp", true)->value().toInt();
+    }
+
+
+    if(request->hasParam("regla5SOC", true)){
+        _config->bateria.rampaCarga.norma[4].valor[SOC]=request->getParam("regla5SOC", true)->value().toInt();
+    }
+    if(request->hasParam("regla5mV", true)){
+        _config->bateria.rampaCarga.norma[4].valor[mV]=request->getParam("regla5mV", true)->value().toInt();
+    }
+    if(request->hasParam("regla5Amp", true)){
+        _config->bateria.rampaCarga.norma[4].valor[Amp]=request->getParam("regla5Amp", true)->value().toInt();
+    }
+
     saveConfigIntoEEPROM();
     request->redirect("/reglas");
 }
@@ -323,6 +426,21 @@ void PortalWeb::salvarlimitesSOC(AsyncWebServerRequest *request){
     if(request->hasParam("stopdescargasoc", true)){
         _config->bateria.soc_min_stop_descarga=request->getParam("stopdescargasoc", true)->value().toInt();
     }
+     _config->bateria.stopCargaPorVoltaje=false;
+    if(request->hasParam("checkstopcargatension", true)){
+        if(request->getParam("checkstopcargatension",true)->value().equals("1"))_config->bateria.stopCargaPorVoltaje=true;    
+    }
+    if(request->hasParam("stopcargatension", true)){
+        _config->bateria.voltajeStopCarga=request->getParam("stopcargatension", true)->value().toInt();
+    }
+    _config->bateria.stopDescargaPorVoltaje=false;
+    if(request->hasParam("checkstopdescargatension", true)){
+        if(request->getParam("checkstopdescargatension", true)->value().equals("1")) _config->bateria.stopDescargaPorVoltaje=true;
+    }
+    if(request->hasParam("stopdescargatension", true)){
+        _config->bateria.voltajeStopDescarga=request->getParam("stopdescargatension", true)->value().toInt();
+    }
+
     saveConfigIntoEEPROM();
     request->redirect("/reglas");
 }
@@ -330,6 +448,9 @@ void PortalWeb::salvarlimitesSOC(AsyncWebServerRequest *request){
 void PortalWeb::salvarNivelSocBajo(AsyncWebServerRequest *request){
     if(request->hasParam("nivelsocbajo",true)){
         uint8_t nivelSOC=(uint8_t)request->getParam("nivelsocbajo", true)->value().toInt();
+        configuracion.bateria.nivelSOCbajo=nivelSOC;
+        configuracionSalvarEEPROM();
+        /*
         uint8_t buffer[23]={};
         uint16_t size=crearTramaEscritura(buffer, 0xB1, nivelSOC,true);
         sendRequestJKBMS(buffer, size);
@@ -337,7 +458,8 @@ void PortalWeb::salvarNivelSocBajo(AsyncWebServerRequest *request){
             Serial.printf("Enviado SOC:%d nivel bajo batería 0xB1::", nivelSOC);
             for(int i=0; i<size; i++)Serial.printf(":%02x", buffer[i]);
             Serial.println("\r");
-        }       
+        }  
+        */     
     }
     request->redirect("/reglas");
 }
@@ -517,26 +639,66 @@ String PortalWeb::procesarAcercade(const String &var){
 
 
 String PortalWeb::procesarReglas(const String &var){
+    
     if(var == "OPCION_MENU") return "reglas";
     if(var == "STOP_CARGA_SOC") return      String(_config->bateria.soc_max_stop_carga);
     if(var == "RESTART_CARGA_SOC") return   String(_config->bateria.soc_min_restart_carga);
     if(var == "RESTART_DESCARGA_SOC")return String(_config->bateria.soc_max_restart_descarga);
     if(var == "STOP_DESCARGA_SOC")return    String(_config->bateria.soc_min_stop_descarga);
-    if(var == "NIVEL_SOC_BAJO")return       String(_jk_bms->low_capacity_alarm_value);
-    if(var.startsWith("CORRIENTE")){
-        if(var == "CORRIENTE_MAX_CARGA") return String(_jk_bms->battery_limits.battery_charge_current_limit);
-        if(var == "CORRIENTE_80SOC") return     String(_config->bateria.intensidad_carga.soc_80);
-        if(var == "CORRIENTE_85SOC") return     String(_config->bateria.intensidad_carga.soc_85);
-        if(var == "CORRIENTE_90SOC") return     String(_config->bateria.intensidad_carga.soc_90);
-        if(var == "CORRIENTE_95SOC") return     String(_config->bateria.intensidad_carga.soc_95);
-        if(var == "CORRIENTE_MAX_DESCARGA") return String(_jk_bms->battery_limits.battery_discharge_current_limit);
-        if(var == "CORRIENTE_20SOC") return     String(_config->bateria.intensidad_descarga.soc_20);
-        if(var == "CORRIENTE_15SOC") return     String(_config->bateria.intensidad_descarga.soc_15);
-        if(var == "CORRIENTE_10SOC") return     String(_config->bateria.intensidad_descarga.soc_10);
-        if(var == "CORRIENTE_05SOC") return     String(_config->bateria.intensidad_descarga.soc_05);
-    }
     if(var == "TENSION_MAX_CARGA") return   String(_jk_bms->battery_limits.battery_charge_voltage/100);
     if(var == "TENSION_MIN_DESCARGA") return String(_jk_bms->battery_limits.battery_discharge_voltage/100);
+    if(var == "CORRIENTE_MAX_CARGA") return String(_jk_bms->battery_limits.battery_charge_current_limit);
+    if(var == "CORRIENTE_MAX_DESCARGA")return String(_jk_bms->battery_limits.battery_discharge_current_limit);
+    if(var == "NIVEL_SOC_BAJO")return String(_config->bateria.nivelSOCbajo); 
+
+    if(var == "CHECK_STOP_CARGA_TENSION")return _config->bateria.stopCargaPorVoltaje? "checked" : "";
+    if(var == "CHECK_STOP_DESCARGA_TENSION")return _config->bateria.stopDescargaPorVoltaje? "checked" : "";
+    if(var == "STOP_CARGA_TENSION")return String(_config->bateria.voltajeStopCarga);
+    if(var == "STOP_DESCARGA_TENSION")return String(_config->bateria.voltajeStopDescarga);
+    if(var == "C_RADIO_SOC") return _config->bateria.rampaCarga_mV? "" : "checked";
+    if(var == "C_RADIO_MV") return _config->bateria.rampaCarga_mV? "checked" : "";
+    if(var == "D_RADIO_SOC") return _config->bateria.rampaDescarga_mV? "" : "checked";
+    if(var == "D_RADIO_MV") return _config->bateria.rampaDescarga_mV? "checked" : "";
+    
+    if(var.startsWith("C_REGLA")){
+        if(var=="C_REGLA1_SOC")return String(_config->bateria.rampaCarga.norma[0].valor[SOC]);
+        if(var=="C_REGLA1_MV") return String(_config->bateria.rampaCarga.norma[0].valor[mV]);
+        if(var=="C_REGLA1_AMP")return String(_config->bateria.rampaCarga.norma[0].valor[Amp]);
+        if(var=="C_REGLA2_SOC")return String(_config->bateria.rampaCarga.norma[1].valor[SOC]);
+        if(var=="C_REGLA2_MV") return String(_config->bateria.rampaCarga.norma[1].valor[mV]);
+        if(var=="C_REGLA2_AMP")return String(_config->bateria.rampaCarga.norma[1].valor[Amp]);
+        if(var=="C_REGLA3_SOC")return String(_config->bateria.rampaCarga.norma[2].valor[SOC]);
+        if(var=="C_REGLA3_MV") return String(_config->bateria.rampaCarga.norma[2].valor[mV]);
+        if(var=="C_REGLA3_AMP")return String(_config->bateria.rampaCarga.norma[2].valor[Amp]);
+        if(var=="C_REGLA4_SOC")return String(_config->bateria.rampaCarga.norma[3].valor[SOC]);
+        if(var=="C_REGLA4_MV") return String(_config->bateria.rampaCarga.norma[3].valor[mV]);
+        if(var=="C_REGLA4_AMP")return String(_config->bateria.rampaCarga.norma[3].valor[Amp]);
+        if(var=="C_REGLA5_SOC")return String(_config->bateria.rampaCarga.norma[4].valor[SOC]);
+        if(var=="C_REGLA5_MV") return String(_config->bateria.rampaCarga.norma[4].valor[mV]);
+        if(var=="C_REGLA5_AMP")return String(_config->bateria.rampaCarga.norma[4].valor[Amp]);
+
+    }
+
+    if(var.startsWith("D_REGLA")){
+        if(var=="D_REGLA1_SOC")return String(_config->bateria.rampaDescarga.norma[0].valor[SOC]);
+        if(var=="D_REGLA1_MV") return String(_config->bateria.rampaDescarga.norma[0].valor[mV]);
+        if(var=="D_REGLA1_AMP")return String(_config->bateria.rampaDescarga.norma[0].valor[Amp]);
+        if(var=="D_REGLA2_SOC")return String(_config->bateria.rampaDescarga.norma[1].valor[SOC]);
+        if(var=="D_REGLA2_MV") return String(_config->bateria.rampaDescarga.norma[1].valor[mV]);
+        if(var=="D_REGLA2_AMP")return String(_config->bateria.rampaDescarga.norma[1].valor[Amp]);
+        if(var=="D_REGLA3_SOC")return String(_config->bateria.rampaDescarga.norma[2].valor[SOC]);
+        if(var=="D_REGLA3_MV") return String(_config->bateria.rampaDescarga.norma[2].valor[mV]);
+        if(var=="D_REGLA3_AMP")return String(_config->bateria.rampaDescarga.norma[2].valor[Amp]);
+        if(var=="D_REGLA4_SOC")return String(_config->bateria.rampaDescarga.norma[3].valor[SOC]);
+        if(var=="D_REGLA4_MV") return String(_config->bateria.rampaDescarga.norma[3].valor[mV]);
+        if(var=="D_REGLA4_AMP")return String(_config->bateria.rampaDescarga.norma[3].valor[Amp]);
+        if(var=="D_REGLA5_SOC")return String(_config->bateria.rampaDescarga.norma[4].valor[SOC]);
+        if(var=="D_REGLA5_MV") return String(_config->bateria.rampaDescarga.norma[4].valor[mV]);
+        if(var=="D_REGLA5_AMP")return String(_config->bateria.rampaDescarga.norma[4].valor[Amp]);
+
+    }
+
+    
     if(var.startsWith("VOL_CELL_")){
         if(var == "VOL_CELL_00SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_0]);
         if(var == "VOL_CELL_01SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_1]);
@@ -558,6 +720,8 @@ String PortalWeb::procesarReglas(const String &var){
         if(var == "VOL_CELL_100SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_100]);
 
     }
+
+
 
 
     return "";

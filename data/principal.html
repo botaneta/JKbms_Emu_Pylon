@@ -201,51 +201,133 @@
         <br>
         <form action="salvarlimitessoc" name="" method="POST">
             <div class="checkbox_div">
-               <label for="stopcargasoc">Stop  carga  SOC&emsp;&emsp;&emsp;&nbsp;
-               <input type="number" value="%STOP_CARGA_SOC%" id="stop" name="stopcargasoc" min="0" max="101" size="4">&#37;</label><br>
-               <label for="restartcargasoc">Restart carga SOC&emsp;&emsp;
-               <input type="number" value="%RESTART_CARGA_SOC%" id="restartcargasoc" name="restartcargasoc" min="0" max=100 size="4">&#37;</label><br>
-               <label for="restartdescargasoc">Restart descarga SOC&ensp;
-               <input type="number" value="%RESTART_DESCARGA_SOC%" id="restartdescargasoc" name="restartdescargasoc" min="0" max="100" size="4">&#37;</label><br>
-               <label for="stopdescargasoc">Stop descarga SOC&nbsp;&emsp;&ensp;
-               <input type="number" value="%STOP_DESCARGA_SOC%" id="stopdescargasoc" name="stopdescargasoc" min="0" max="100" size="4">&#37;</label><br>
-               <input class="button" type="submit" value="Guardar">
+                <label for="stopcargasoc">STOP carga SOC&emsp;&emsp;&emsp;&nbsp;
+                    <input type="number" value="%STOP_CARGA_SOC%" id="stop" name="stopcargasoc" min="0" max="101" size="4">&#37;
+                </label>
+                <br>
+                <label for="stopcargatension">STOP carga Voltaje
+                    <input type="checkbox" name="checkstopcargatension" value="1" %CHECK_STOP_CARGA_TENSION%>
+                    <input type="number" name="stopcargatension" value="%STOP_CARGA_TENSION%" min="0">0.1V 
+                </label>
+                <br>
+                <label for="restartcargasoc">Restart carga SOC&emsp;&emsp;
+                    <input type="number" value="%RESTART_CARGA_SOC%" id="restartcargasoc" name="restartcargasoc" min="0" max=100 size="4">&#37;
+                </label>
+                <br>
+                <label for="restartdescargasoc">Restart descarga SOC&ensp;
+                    <input type="number" value="%RESTART_DESCARGA_SOC%" id="restartdescargasoc" name="restartdescargasoc" min="0" max="100" size="4">&#37;
+                </label>
+                <br>
+                <label for="stopcargatension">STOP descarga Voltaje
+                    <input type="checkbox" name="checkstopdescargatension" value="1" %CHECK_STOP_DESCARGA_TENSION%>
+                    <input type="number" name="stopdescargatension" value="%STOP_DESCARGA_TENSION%" min="0">0.1V 
+                </label>
+                <br>
+                <label for="stopdescargasoc">STOP descarga SOC&nbsp;&emsp;&ensp;
+                    <input type="number" value="%STOP_DESCARGA_SOC%" id="stopdescargasoc" name="stopdescargasoc" min="0" max="100" size="4">&#37;
+                </label>
+                <br>
+                <input class="button" type="submit" value="Guardar">
             </div>
         </form>
         <br>
         <form action="salvarrampacarga" name="" method="POST">
             <div class="checkbox_div">
-               <label for="corrienteMaximaCarga">Intesidad de carga&emsp;&emsp;
-               <input type="number" value="%CORRIENTE_MAX_CARGA%" id="corrienteMaximaCarga" readonly size="5">A</label><br>
-               <label for="corriente80soc">Carga desde 80&#37;SOC
-               <input type="number" value="%CORRIENTE_80SOC%" id="corriente80soc" name="corriente80soc" min="0" size="5">A</label><br>
-               <label for="corriente85soc">Carga desde 85&#37;SOC
-               <input type="number" value="%CORRIENTE_85SOC%" id="corriente85soc" name="corriente85soc" min="0" size="5">A</label><br>
-               <label for="corriente90soc">Carga desde 90&#37;SOC
-               <input type="number" value="%CORRIENTE_90SOC%" id="corriente90soc" name="corriente90soc" min="0" size="5">A</label><br>
-               <label for="corriente95soc">Carga desde 95&#37;SOC
-               <input type="number" value="%CORRIENTE_95SOC%" id="corriente95soc" name="corriente95soc" min="0" size="5">A</label><br>
-               <input class="button" type="submit" value="Guardar">
+                <label><strong>Intensidad de carga&ensp;<input type="number" value="%CORRIENTE_MAX_CARGA%"  readonly size="5">A</strong></label><br>
+                <table style="border:none;">
+                <tr>
+                    <td colspan="4" >   
+                    <label for="radio1"><input type="radio"  name="rampacarga"id="radio1" value="rampaSOC" %C_RADIO_SOC%>Ajuste por SOC</label>
+                    <label for="radio2"><input type="radio"  name="rampacarga" id="radio2" value="rampaMV" %C_RADIO_MV%>Ajuste por Cell mV</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#1&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA1_SOC%" name="regla1SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA1_MV%" name="regla1mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA1_AMP%" name="regla1Amp">A&ensp;</td>
+                </tr>
+                <tr>
+                    <td>#2&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA2_SOC%" name="regla2SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA2_MV%" name="regla2mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA2_AMP%" name="regla2Amp">A&ensp;</td>
+                </tr>
+                <tr>
+                    <td>#3&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA3_SOC%" name="regla3SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA3_MV%" name="regla3mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA3_AMP%" name="regla3Amp">A&ensp;</td>
+                </tr>
+                <tr>
+                    <td>#4&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA4_SOC%" name="regla4SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA4_MV%" name="regla4mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA4_AMP%" name="regla4Amp">A&ensp;</td>
+                </tr>
+                <tr>
+                    <td>#5&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA5_SOC%" name="regla5SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA5_MV%" name="regla5mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%C_REGLA5_AMP%" name="regla5Amp">A&ensp;</td>
+                </tr>
+                
+            </table>
+            <br>
+            <input class="button" type="submit" value="Guardar">
+               
             </div>
         </form>
         <br>
         <form action="salvarrampadescarga" name="" method="POST">
             <div class="checkbox_div">
-               <label for="corrienteMaximaDescarga">Intesidad de descarga&emsp;&emsp;
-               <input type="number" value="%CORRIENTE_MAX_DESCARGA%" id="corrienteMaximaDescarga" readonly size="5">A</label><br>
-               <label for="corriente20soc">Descarga desde 20&#37;SOC
-               <input type="number" value="%CORRIENTE_20SOC%" id="corriente20soc" name="corriente20soc" min="0" size="5">A</label><br>
-               <label for="corriente15soc">Descarga desde 15&#37;SOC
-               <input type="number" value="%CORRIENTE_15SOC%" id="corriente15soc" name="corriente15soc" min="0" size="5">A</label><br>
-               <label for="corriente10soc">Descarga desde 10&#37;SOC
-               <input type="number" value="%CORRIENTE_10SOC%" id="corriente10soc" name="corriente10soc" min="0" size="5">A</label><br>
-               <label for="corriente05soc">Descarga desde &nbsp; 5&#37;SOC
-               <input type="number" value="%CORRIENTE_05SOC%" id="corriente05soc" name="corriente05soc" min="0" size="5">A</label><br>
-               <input class="button" type="submit" value="Guardar">
+                <label><strong>Intensidad de descarga&ensp;<input type="number" value="%CORRIENTE_MAX_DESCARGA%"  readonly size="5">A</strong></label><br>
+                <table style="border:none;">
+                <tr>
+                    <td colspan="4" >   
+                    <label for="radio1"><input type="radio"  name="rampadescarga"id="radio1" value="rampaSOC" %D_RADIO_SOC%>Ajuste por SOC</label>
+                    <label for="radio2"><input type="radio"  name="rampadescarga" id="radio2" value="rampaMV" %D_RADIO_MV%>Ajuste por Cell mV</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#1&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA1_SOC%" name="regla1SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA1_MV%" name="regla1mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA1_AMP%" name="regla1Amp">A&ensp;</td>
+                </tr>
+                <tr>
+                    <td>#2&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA2_SOC%" name="regla2SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA2_MV%" name="regla2mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA2_AMP%" name="regla2Amp">A&ensp;</td>
+                </tr>
+                <tr>
+                    <td>#3&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA3_SOC%" name="regla3SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA3_MV%" name="regla3mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA3_AMP%" name="regla3Amp">A&ensp;</td>
+                </tr>
+                <tr>
+                    <td>#4&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA4_SOC%" name="regla4SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA4_MV%" name="regla4mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA4_AMP%" name="regla4Amp">A&ensp;</td>
+                </tr>
+                <tr>
+                    <td>#5&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA5_SOC%" name="regla5SOC">&#37;&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA5_MV%" name="regla5mV">mV&ensp;</td>
+                    <td><input type="number" min="0" value="%D_REGLA5_AMP%" name="regla5Amp">A&ensp;</td>
+                </tr>
+                
+            </table>
+            <br>
+            <input class="button" type="submit" value="Guardar">
+               
             </div>
         </form>
         <br>
-        <form action="salvarnivelsocbajo" name="" method="POST">
+        <form action="salvarnivelsocbajo"  method="POST">
             <div class="checkbox_div">
                 <label for="socnivelbajo">SOC bajo alarma&emsp;
                     <input type="number" name="nivelsocbajo" value="%NIVEL_SOC_BAJO%" min="10" max="80">&#37;

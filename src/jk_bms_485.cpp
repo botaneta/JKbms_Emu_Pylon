@@ -466,9 +466,9 @@ uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor,
 	//  comando   escritura 0x02
 	buffer[8]=0x02;
 	// fuente de la trama PC 0x03, GPS 0x02
-	buffer[9]=0x03;
-	//tipo de transmisión  0=request  1=answer  
-	buffer[10]=0x00;    
+	buffer[9]=0x02;
+	//tipo de transmisión  0=request  1=answer  2=dataUpload
+	buffer[10]=0x02;    
 	// payload
 	buffer[11] = direccion;
 	uint8_t index=12; //indice siguiente byte
@@ -484,9 +484,9 @@ uint8_t crearTramaEscritura(uint8_t * buffer, uint8_t direccion, uint16_t valor,
 	index++;
 	buffer[index]=0x00; 
 	index++;
-	buffer[index]=0x20;
+	buffer[index]=0x00;
 	index++;
-	buffer[index]=0x01;
+	buffer[index]=0x00;
 	index++;
 	//end frame
 	buffer[index]=0x68;  //byte end frame to start frame=>checksum

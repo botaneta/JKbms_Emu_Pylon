@@ -12,6 +12,9 @@
 #define FREQ_MUESTREO           3 //cada 3segundos
 const TickType_t delayMuestreo = (1000 * FREQ_MUESTREO) / portTICK_PERIOD_MS; //peticiones cada 1000msg * muestreo
 
+
+void bajaCapacidad();
+
 //----------FUNCIONES DE TAREAS----------------------// 
 
 void peticionrs485_task(void * parameters){
@@ -78,6 +81,7 @@ void parseoColaLecturaToJk_bms_battery_info_task(void * parameters){
               Parse_JK_Battery_485_Status_Frame(bufferReceiver);
               //actualizarContadorEnergia();
               //ajustarSOC();  no usar 
+              bajaCapacidad();
               ajustarAmperiosCargaDescarga();
               controlCargaDescarga();
               contador=0;
@@ -535,23 +539,36 @@ void enviarCANbatrium(){
 void controlCargaDescarga(){
   uint8_t soc=jk_bms_battery_info.battery_status.battery_soc;
   bool hayCambio=false;
+  bool descargar=true;
+  bool cargar=true;
+  uint16_t voltaje=jk_bms_battery_info.battery_status.battery_voltage/10;
+  
+  if(configuracion.bateria.stopCargaPorVoltaje){
+    if(voltaje < configuracion.bateria.voltajeStopCarga) cargar=true;
+    if(voltaje >= configuracion.bateria.voltajeStopCarga) cargar=false;
+  }
+  if(configuracion.bateria.stopDescargaPorVoltaje){
+    if(voltaje > configuracion.bateria.voltajeStopDescarga)descargar=true;
+    if(voltaje <= configuracion.bateria.voltajeStopDescarga)descargar=false;
+  }
 
-  if(soc > configuracion.bateria.soc_max_restart_descarga && jk_bms_battery_info.battery_mosfet.discharge){
+
+  if(soc > configuracion.bateria.soc_max_restart_descarga && jk_bms_battery_info.battery_mosfet.discharge && descargar){
     hayCambio = configuracion.habilitarDescarga? false : true;
     configuracion.habilitarDescarga=true;
   }
 
-  if(soc <= configuracion.bateria.soc_min_stop_descarga || !jk_bms_battery_info.battery_mosfet.discharge){
+  if(soc <= configuracion.bateria.soc_min_stop_descarga || !jk_bms_battery_info.battery_mosfet.discharge || !descargar){
     hayCambio = configuracion.habilitarDescarga? true : false;
     configuracion.habilitarDescarga=false;
   }
 
-  if(soc < configuracion.bateria.soc_min_restart_carga && jk_bms_battery_info.battery_mosfet.charge){
+  if(soc < configuracion.bateria.soc_min_restart_carga && jk_bms_battery_info.battery_mosfet.charge && cargar){
     hayCambio=configuracion.habilitarCarga? false: true;
     configuracion.habilitarCarga=true;
   }
 
-  if(soc >= configuracion.bateria.soc_max_stop_carga || !jk_bms_battery_info.battery_mosfet.charge){
+  if(soc >= configuracion.bateria.soc_max_stop_carga || !jk_bms_battery_info.battery_mosfet.charge || !cargar){
     hayCambio = configuracion.habilitarCarga? true:false;
     configuracion.habilitarCarga=false; 
   }
@@ -625,25 +642,25 @@ void ajustarSOC(){
     jk_bms_battery_info.battery_status.battery_soc=socJK;
 }
 
-/* devuelve indices de posición de soc con respecto a un escala definada en una array*/
-uint8_t * getIndexLimit(uint8_t soc, uint8_t *indexLimit, uint8_t * arrayOrdenado, uint8_t sizearrayOrdenado){
+/* devuelve indices de posición de soc con respecto a un escala definada en una array ascendente*/
+uint8_t * getIndexLimit(uint16_t soc, uint8_t *indexLimit, uint16_t * arrayEscalaAscnd, uint16_t sizearrayEscalaAscnd){
   
-  for(int i=0; i < sizearrayOrdenado; i++){
+  for(int i=0; i < sizearrayEscalaAscnd; i++){
     
-    if(soc < arrayOrdenado[0]){
+    if(soc < arrayEscalaAscnd[0]){
       indexLimit[0]=0;
       indexLimit[1]=0;
       break;
-    }else if( soc > arrayOrdenado[sizearrayOrdenado-1] ){
-      indexLimit[0]=sizearrayOrdenado-1;
-      indexLimit[1]=sizearrayOrdenado-1;
+    }else if( soc > arrayEscalaAscnd[sizearrayEscalaAscnd-1] ){
+      indexLimit[0]=sizearrayEscalaAscnd-1;
+      indexLimit[1]=sizearrayEscalaAscnd-1;
       break;
-    }else if(soc == arrayOrdenado[i]){
+    }else if(soc == arrayEscalaAscnd[i]){
       indexLimit[0]=i;
       indexLimit[1]=i;
       break;
     }
-    if(soc < arrayOrdenado[i] && soc > arrayOrdenado[i-1]){
+    if(soc < arrayEscalaAscnd[i] && soc > arrayEscalaAscnd[i-1]){
       indexLimit[0]=i-1;
       indexLimit[1]=i;
     }
@@ -664,13 +681,13 @@ long proporcion(long x, long in_min, long in_max, long out_min, long out_max) {
 
 
 /* Modifica el valor de carga y descarga proporcionado por JKBMS para adaptarlo a la curva de carga*/
-void ajustarAmperiosCargaDescarga(){
+void ajustarAmperiosCargaDescarga2(){
   uint16_t data=0;
   uint8_t indices[]={0,0};
-  uint8_t mayorSOC=0;
-  uint8_t menorSOC=0;
-  uint8_t superiorSOC[]={79,80,85,90,95};
-  uint8_t soc=jk_bms_battery_info.battery_status.battery_soc;
+  //uint8_t mayorSOC=0;
+  //uint8_t menorSOC=0;
+  uint16_t superiorSOC[]={79,80,85,90,95};
+  uint16_t soc=jk_bms_battery_info.battery_status.battery_soc;
   uint16_t limiteCarga[]={jk_bms_battery_info.battery_limits.battery_charge_current_limit,
                         configuracion.bateria.intensidad_carga.soc_80,
                         configuracion.bateria.intensidad_carga.soc_85,
@@ -680,7 +697,7 @@ void ajustarAmperiosCargaDescarga(){
   data=proporcion(soc,  superiorSOC[indices[0]], superiorSOC[indices[1]], limiteCarga[indices[0]], limiteCarga[indices[1]]);
   jk_bms_battery_info.battery_limits.battery_charge_current_limit=data;
   
-  uint8_t inferiorSOC[]={5,10,15,20,21};
+  uint16_t inferiorSOC[]={5,10,15,20,21};
   uint16_t limiteDescarga[]={configuracion.bateria.intensidad_descarga.soc_05,
                             configuracion.bateria.intensidad_descarga.soc_10,
                             configuracion.bateria.intensidad_descarga.soc_15,
@@ -691,3 +708,58 @@ void ajustarAmperiosCargaDescarga(){
   jk_bms_battery_info.battery_limits.battery_discharge_current_limit=data;
 }
 
+void ajustarAmperiosCargaDescarga(){
+  const int INF=0;
+  const int SUP=1;
+  uint8_t indice[2]={0};
+  uint16_t amperios=0;
+  uint16_t rampaAmperios[5]={0};
+  uint16_t rampaEscala[5]={0};
+  uint16_t soc=jk_bms_battery_info.battery_status.battery_soc;
+  uint16_t avrcells=jk_bms_battery_info.cell_Vavrg;
+  uint16_t valor=0;
+  uint8_t escala;
+  //rampa carga 
+  if(configuracion.bateria.rampaCarga_mV){
+      valor=avrcells;    
+      escala=mV;
+  }else{
+      valor=soc;
+      escala=SOC;
+  }
+  for(int i=0; i<5; i++){
+    rampaAmperios[i]=configuracion.bateria.rampaCarga.norma[i].valor[Amp];
+    rampaEscala[i]=configuracion.bateria.rampaCarga.norma[i].valor[escala];
+  } 
+  getIndexLimit(valor, indice, rampaEscala, 5);
+  amperios=proporcion(valor, rampaEscala[indice[INF]], rampaEscala[indice[SUP]],
+                            rampaAmperios[indice[INF]], rampaAmperios[indice[SUP]]);
+    
+  jk_bms_battery_info.battery_limits.battery_charge_current_limit=amperios;
+
+
+  //rampa descarga
+  
+  if(configuracion.bateria.rampaDescarga_mV){
+      valor=avrcells;    
+      escala=mV;
+  }else{
+      valor=soc;
+      escala=SOC;
+  }
+  for(int i=4, z=0; i>-1; i--, z++){
+    rampaAmperios[z]=configuracion.bateria.rampaDescarga.norma[i].valor[Amp]; //voltear los array
+    rampaEscala[z]=configuracion.bateria.rampaDescarga.norma[i].valor[escala];
+  } 
+  getIndexLimit(valor, indice, rampaEscala, 5);
+  amperios=proporcion(valor, rampaEscala[indice[INF]], rampaEscala[indice[SUP]],
+                            rampaAmperios[indice[INF]], rampaAmperios[indice[SUP]]);
+  jk_bms_battery_info.battery_limits.battery_discharge_current_limit=amperios;                      
+  
+}
+
+void bajaCapacidad(){
+  if(jk_bms_battery_info.battery_status.battery_soc < configuracion.bateria.nivelSOCbajo){
+    jk_bms_battery_info.low_capacity_alarm_value=true;
+  }
+}

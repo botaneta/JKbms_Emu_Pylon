@@ -3,6 +3,9 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
+#define SOC 0
+#define mV 1
+#define Amp 2
 #define PASSWORD_CALIBRACION_SOC "Calibración SOC"
 
      // curvas de vol & soc    0%,   1%,   2%,   3%,   4%,   5%,   7%, 1 0%,   15%,   80%, 85%, 90%, 95%, 96%, 97%, 98%, 99%, 100%
@@ -34,21 +37,44 @@ struct IntensidadDescarga{
 };
 
 
+struct Norma{
+     uint16_t valor[3];
+ };
+
+
+struct RampaCarga{
+    Norma norma[5];
+};
+
+struct RampaDescarga{
+    Norma norma[5];
+};
+
+
 struct CalibracionSOC{
     uint16_t voltageCell[18];
 
 };
 
 struct Bateria{
-
-    bool  cargado_total;
+    bool cargado_total;
+    bool  calibracionSOC;
+    bool rampaCarga_mV;
+    bool rampaDescarga_mV;
+    bool stopCargaPorVoltaje;
+    bool stopDescargaPorVoltaje;
     struct CalibracionSOC calibracion;
 	struct IntensidadCarga intensidad_carga;
 	struct IntensidadDescarga intensidad_descarga;
+    struct RampaCarga rampaCarga;
+    struct RampaDescarga rampaDescarga;
+    uint16_t voltajeStopCarga;
+    uint16_t voltajeStopDescarga;
     uint8_t soc_max_stop_carga;
     uint8_t soc_min_restart_carga;
     uint8_t soc_min_stop_descarga;
     uint8_t soc_max_restart_descarga;
+    uint8_t nivelSOCbajo;
 };
 
 

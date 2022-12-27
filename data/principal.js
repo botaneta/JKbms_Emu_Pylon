@@ -80,7 +80,7 @@ function rellenarDatosBateria(jsondoc){
 	});
 	if(jsondoc["habilitarCarga"]==true)document.getElementById("habilitarCarga").style.backgroundColor="green";
 	if(jsondoc["habilitarDescarga"]==true)document.getElementById("habilitarDescarga").style.backgroundColor="green";
-	if(jsondoc["lowCapacity"]==true)document.getElementById("lowCapacity").style.backgroundColor="red";
+	if(jsondoc["lowCapacity"]==true)document.getElementById("lowCapacity").style.backgroundColor="orange";
 	if(jsondoc["mosfet_overtemp"]==true)document.getElementById("mosfet_overtemp").style.backgroundColor="red";
 	if(jsondoc["OVC"]==true)document.getElementById("OVC").style.backgroundColor="red";
 	if(jsondoc["OCC"]==true)document.getElementById("OCC").style.backgroundColor="red";

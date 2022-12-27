@@ -25,19 +25,52 @@ void configuracionInicial(){
 
     configuracion.errorComunicacionJK=false;
 
-    configuracion.bateria.cargado_total=false;
-    configuracion.bateria.intensidad_carga.soc_80=100;
-    configuracion.bateria.intensidad_carga.soc_85=50;
-    configuracion.bateria.intensidad_carga.soc_90=20;
-    configuracion.bateria.intensidad_carga.soc_95=2;
-    configuracion.bateria.intensidad_descarga.soc_20=50;
-    configuracion.bateria.intensidad_descarga.soc_15=25;
-    configuracion.bateria.intensidad_descarga.soc_10=5;
-    configuracion.bateria.intensidad_descarga.soc_05=0;
+    
     configuracion.bateria.soc_max_restart_descarga=25;
     configuracion.bateria.soc_min_stop_descarga=8;
     configuracion.bateria.soc_max_stop_carga=99;
     configuracion.bateria.soc_min_restart_carga=80;
+    configuracion.bateria.nivelSOCbajo=25;
+
+    configuracion.bateria.calibracionSOC=false;
+    configuracion.bateria.stopCargaPorVoltaje=false;
+    configuracion.bateria.stopDescargaPorVoltaje=false;
+    configuracion.bateria.rampaCarga_mV=false;
+    configuracion.bateria.rampaDescarga_mV=false;
+
+    configuracion.bateria.rampaCarga.norma[0].valor[SOC]=80;
+    configuracion.bateria.rampaCarga.norma[0].valor[mV]=3300;
+    configuracion.bateria.rampaCarga.norma[0].valor[Amp]=70;
+    configuracion.bateria.rampaCarga.norma[1].valor[SOC]=85;
+    configuracion.bateria.rampaCarga.norma[1].valor[mV]=3340;
+    configuracion.bateria.rampaCarga.norma[1].valor[Amp]=70;
+    configuracion.bateria.rampaCarga.norma[2].valor[SOC]=90;
+    configuracion.bateria.rampaCarga.norma[2].valor[mV]=3390;
+    configuracion.bateria.rampaCarga.norma[2].valor[Amp]=70;
+    configuracion.bateria.rampaCarga.norma[3].valor[SOC]=95;
+    configuracion.bateria.rampaCarga.norma[3].valor[mV]=3400;
+    configuracion.bateria.rampaCarga.norma[3].valor[Amp]=20;
+    configuracion.bateria.rampaCarga.norma[4].valor[SOC]=98;
+    configuracion.bateria.rampaCarga.norma[4].valor[mV]=3450;
+    configuracion.bateria.rampaCarga.norma[4].valor[Amp]=5;
+
+    configuracion.bateria.rampaDescarga.norma[0].valor[SOC]=20;
+    configuracion.bateria.rampaDescarga.norma[0].valor[mV]=3100;
+    configuracion.bateria.rampaDescarga.norma[0].valor[Amp]=70;
+    configuracion.bateria.rampaDescarga.norma[1].valor[SOC]=15;
+    configuracion.bateria.rampaDescarga.norma[1].valor[mV]=3050;
+    configuracion.bateria.rampaDescarga.norma[1].valor[Amp]=35;
+    configuracion.bateria.rampaDescarga.norma[2].valor[SOC]=10;
+    configuracion.bateria.rampaDescarga.norma[2].valor[mV]=3000;
+    configuracion.bateria.rampaDescarga.norma[2].valor[Amp]=10;
+    configuracion.bateria.rampaDescarga.norma[3].valor[SOC]=5;
+    configuracion.bateria.rampaDescarga.norma[3].valor[mV]=2800;
+    configuracion.bateria.rampaDescarga.norma[3].valor[Amp]=4;
+    configuracion.bateria.rampaDescarga.norma[4].valor[SOC]=2;
+    configuracion.bateria.rampaDescarga.norma[4].valor[mV]=2680;
+    configuracion.bateria.rampaDescarga.norma[4].valor[Amp]=0;
+
+
 
 
     for(int i=0; i < CELL_SOC::SOC_COUNT; i++){
