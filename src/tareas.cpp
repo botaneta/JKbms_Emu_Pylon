@@ -760,6 +760,6 @@ void ajustarAmperiosCargaDescarga(){
 
 void bajaCapacidad(){
   if(jk_bms_battery_info.battery_status.battery_soc < configuracion.bateria.nivelSOCbajo){
-    jk_bms_battery_info.low_capacity_alarm_value=true;
+    jk_bms_battery_info.battery_alarms.low_capacity=true;
   }
 }
