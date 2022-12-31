@@ -19,7 +19,7 @@ ESP32 +5v--------------------------(+5v)TJA1050<br>
 
 # Instrucciones
 
-Pruebas con módulo ESP32 DevKit v1<br>
+Pruebas con módulo ESP32 DevKit v1, JK-B2A24S150P<br>
 Conectar a la WiFi del ESP32 "JKBMS_EMU_PYLONTECH" (parpadeo led azul) y configurar SSID y PASSWORD de WiFi local (fijo led azul).<br>
 Buscar ip del esp32 en wifi local y acceder a su página web para configurar.<br>
 Hacer pruebas de funcionamiento.<br>
@@ -31,12 +31,14 @@ Se prueba el protocolo de alto voltaje con exito. El protocolo de bajo, por mi c
 Se prueba la rampa de carga con exito, el inversor adapta la corriente carga a los valores configurados en el esp32, los valores de corriente enviados al inversor entre escalas de SOC, es proporcional<br>
 Se prueba con exito el control ante un posible fallo de comunicación entre en esp32 y la jkbms para poder parar toda actividad con el inversor.<br>
 Se prueba con exito la perdida de conexión CAN y reconexión con el inversor<br>
+Se añade publicación de mensaje MQTT con el estado de la batería<br>
+Se puede configurar los voltajes de carga y descarga diferentes a los proporcionados por el bms JK<br>
+Ahora las rampas de carga/descarga se pueden establecer 5reglas para adaptar la intensidad en función del SOC o voltaje medio de celda<br>
 
 
 # TODO List
 <ul>
 <li>Mejorar la interfaz web, página de configuración Wifi, etc.</li>
-<li>Añadir mensajes por MQTT.</li>
 <li>Añadir mensajes para INFLUXDB.</li>
 <li>Añadir pantalla led para mostrar datos básicos.</li>
 <li>Poner la batería en reposo/activa cuando lo solicite el inversor.</li>
