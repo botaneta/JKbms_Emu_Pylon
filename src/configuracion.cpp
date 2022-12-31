@@ -37,6 +37,10 @@ void configuracionInicial(){
     configuracion.bateria.stopDescargaPorVoltaje=false;
     configuracion.bateria.rampaCarga_mV=false;
     configuracion.bateria.rampaDescarga_mV=false;
+    configuracion.bateria.voltajesCargaDescargaConfigurados=false;
+
+    configuracion.bateria.voltajeMaxCarga=0;
+    configuracion.bateria.voltajeMinDescarga=0;
 
     configuracion.bateria.rampaCarga.norma[0].valor[SOC]=80;
     configuracion.bateria.rampaCarga.norma[0].valor[mV]=3300;

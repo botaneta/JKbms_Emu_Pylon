@@ -102,6 +102,14 @@ function limpiarventana(){
 	document.getElementById("acercade_div").style.display="none";
 }
 
+function habilitarLimitesCargaDescarga(){
+	var check=document.getElementById("checkcustomtension").checked;
+	if(check == true){
+		document.getElementById("tensionMaximaCarga").removeAttribute("readonly");
+		document.getElementById("tensionMinimaDescarga").removeAttribute("readonly");
+	}
+}
+
 /* 
 	Funciones de menú:
 	1º cambia la variable del html opcionmenu

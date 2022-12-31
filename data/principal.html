@@ -190,41 +190,50 @@
     
     <div id="reglas_div" style="display:none;">
         <h3>Configuración de rampas  carga y descarga</h3>
-        <form>
+        <form method="POST" action="salvarlimitesvoltajes">
             <div class="checkbox_div">
-                <label for="tensionMaximaCarga">Tensión máxima carga&nbsp;&emsp;&emsp;
-                <input type="number" value="%TENSION_MAX_CARGA%" id="tensionMaximaCarga" readonly size="5">V</label><br>
-                <label for="tensionMinimaDescarga">Tensión minima descarga&emsp;
-                <input type="number" value="%TENSION_MIN_DESCARGA%" id="tensionMinimaDescarga" readonly size="5">V</label>
+                <label for="checkcustomtension">
+                    <input type="checkbox" onclick="habilitarLimitesCargaDescarga()" id="checkcustomtension" name="checkcustomtension" value="1" %CHECK_CUSTOM_TENSION%>Configurar voltajes
+                </label>
+                <br>
+                <label for="tensionMaximaCarga">Voltaje max carga  &nbsp;&emsp;
+                    <div class="databox"><input type="number" min="0" max="655" value="%TENSION_MAX_CARGA%" id="tensionMaximaCarga" name="tensionMaximaCarga" readonly size="6" step="0.01">V</div>
+                </label>
+                <br>
+                <label for="tensionMinimaDescarga">Voltaje min descarga &emsp;
+                    <div class="databox"><input type="number" min="0" max="655" value="%TENSION_MIN_DESCARGA%" id="tensionMinimaDescarga" name="tensionMinimaDescarga" readonly size="6" step="0.01">V</div>
+                </label>
+                <br>
+                <input class="button" type="submit" value="Guardar">
             </div>    
         </form>
         <br>
         <form action="salvarlimitessoc" name="" method="POST">
             <div class="checkbox_div">
                 <label for="stopcargasoc">STOP carga SOC&emsp;&emsp;&emsp;&nbsp;
-                    <input type="number" value="%STOP_CARGA_SOC%" id="stop" name="stopcargasoc" min="0" max="101" size="4">&#37;
+                    <div class="databox"><input type="number" value="%STOP_CARGA_SOC%" id="stop" name="stopcargasoc" min="0" max="101" size="4">&#37;</div>
                 </label>
                 <br>
                 <label for="stopcargatension">STOP carga Voltaje
                     <input type="checkbox" name="checkstopcargatension" value="1" %CHECK_STOP_CARGA_TENSION%>
-                    <input type="number" name="stopcargatension" value="%STOP_CARGA_TENSION%" min="0">0.1V 
+                    <div class="databox"><input type="number" name="stopcargatension" value="%STOP_CARGA_TENSION%" min="0" max="655" step="0.01" size="8">V</div> 
                 </label>
                 <br>
                 <label for="restartcargasoc">Restart carga SOC&emsp;&emsp;
-                    <input type="number" value="%RESTART_CARGA_SOC%" id="restartcargasoc" name="restartcargasoc" min="0" max=100 size="4">&#37;
+                    <div class="databox"><input type="number" value="%RESTART_CARGA_SOC%" id="restartcargasoc" name="restartcargasoc" min="0" max=100 size="4">&#37;</div>
                 </label>
                 <br>
                 <label for="restartdescargasoc">Restart descarga SOC&ensp;
-                    <input type="number" value="%RESTART_DESCARGA_SOC%" id="restartdescargasoc" name="restartdescargasoc" min="0" max="100" size="4">&#37;
+                    <div class="databox"><input type="number" value="%RESTART_DESCARGA_SOC%" id="restartdescargasoc" name="restartdescargasoc" min="0" max="100" size="4">&#37;</div>
                 </label>
                 <br>
                 <label for="stopcargatension">STOP descarga Voltaje
                     <input type="checkbox" name="checkstopdescargatension" value="1" %CHECK_STOP_DESCARGA_TENSION%>
-                    <input type="number" name="stopdescargatension" value="%STOP_DESCARGA_TENSION%" min="0">0.1V 
+                    <div class="databox"><input type="number" name="stopdescargatension" value="%STOP_DESCARGA_TENSION%" min="0" max="655" step="0.01" size="8">V</div> 
                 </label>
                 <br>
                 <label for="stopdescargasoc">STOP descarga SOC&nbsp;&emsp;&ensp;
-                    <input type="number" value="%STOP_DESCARGA_SOC%" id="stopdescargasoc" name="stopdescargasoc" min="0" max="100" size="4">&#37;
+                    <div class="databox"><input type="number" value="%STOP_DESCARGA_SOC%" id="stopdescargasoc" name="stopdescargasoc" min="0" max="100" size="4">&#37;</div>
                 </label>
                 <br>
                 <input class="button" type="submit" value="Guardar">
@@ -336,6 +345,7 @@
             </div>
         </form>
         <br>
+       <!-- 
         <form action="salvarcalibracionsoc" name="" method="POST">
             <div class="checkbox_div">
              <h3>Calibración SOC %CELL_CHEMICAL%</h3>   
@@ -363,7 +373,7 @@
             </table>
             </div>
         </form>
-        
+        -->
     </div>
  
 

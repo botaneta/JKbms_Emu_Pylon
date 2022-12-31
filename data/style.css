@@ -209,3 +209,13 @@ form {
     padding: 0  0 1em 0 ;
 
 }
+
+
+.databox {
+    float:right;
+    padding-right: 0.5em;
+}
+
+.databox input[step='0.01'] {
+    min-width: 4.5em;
+}

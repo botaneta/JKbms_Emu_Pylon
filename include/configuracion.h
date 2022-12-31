@@ -22,19 +22,7 @@ struct METER{
     uint32_t miliamperioSegundo;
 };
 
-struct IntensidadCarga{
-	uint16_t soc_80;
-    uint16_t soc_85;
-	uint16_t soc_90;
-	uint16_t soc_95;
-};
 
-struct IntensidadDescarga{
-	uint16_t soc_20;
-    uint16_t soc_15;
-	uint16_t soc_10;
-	uint16_t soc_05;
-};
 
 
 struct Norma{
@@ -58,16 +46,18 @@ struct CalibracionSOC{
 
 struct Bateria{
     bool cargado_total;
-    bool  calibracionSOC;
+    bool calibracionSOC;
     bool rampaCarga_mV;
     bool rampaDescarga_mV;
     bool stopCargaPorVoltaje;
     bool stopDescargaPorVoltaje;
+    bool voltajesCargaDescargaConfigurados;
     struct CalibracionSOC calibracion;
-	struct IntensidadCarga intensidad_carga;
-	struct IntensidadDescarga intensidad_descarga;
+	
     struct RampaCarga rampaCarga;
     struct RampaDescarga rampaDescarga;
+    uint16_t voltajeMaxCarga;
+    uint16_t voltajeMinDescarga;
     uint16_t voltajeStopCarga;
     uint16_t voltajeStopDescarga;
     uint8_t soc_max_stop_carga;

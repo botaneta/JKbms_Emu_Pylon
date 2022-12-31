@@ -69,6 +69,7 @@ void enviarDatosMqtt_task(void * parameters);
 
 //funciones auxiliares
 /** Actualiza los permisos de carga y descarga para el inversor en funcion del soc*/
+void ajustarVoltajeCargaDescarga();
 void controlCargaDescarga();
 void actualizarContadorEnergia();
 void ajustarSOC();

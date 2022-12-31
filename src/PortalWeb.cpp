@@ -413,6 +413,27 @@ void PortalWeb::salvarrampacarga(AsyncWebServerRequest *request){
     request->redirect("/reglas");
 }
 
+void PortalWeb::salvarlimitesVoltajes(AsyncWebServerRequest *request){
+    _config->bateria.voltajesCargaDescargaConfigurados=false;
+    if(request->hasParam("checkcustomtension", true)){
+        if(request->getParam("checkcustomtension",true)->value().equals("1")){
+            _config->bateria.voltajesCargaDescargaConfigurados=true;
+        }
+    }
+    if(request->hasParam("tensionMaximaCarga",true)){
+        uint16_t voltaje=request->getParam("tensionMaximaCarga",true)->value().toFloat()*100;        
+        _config->bateria.voltajeMaxCarga=voltaje;
+        if(voltaje==0)_config->bateria.voltajesCargaDescargaConfigurados=false;
+    }
+    if(request->hasParam("tensionMinimaDescarga",true)){
+        uint16_t voltaje=request->getParam("tensionMinimaDescarga",true)->value().toFloat()*100;
+        _config->bateria.voltajeMinDescarga=voltaje;
+        if(voltaje==0)_config->bateria.voltajesCargaDescargaConfigurados=false;
+    }
+    saveConfigIntoEEPROM();
+    request->redirect("/reglas");
+}
+
 void PortalWeb::salvarlimitesSOC(AsyncWebServerRequest *request){
     if(request->hasParam("stopcargasoc", true)){
         _config->bateria.soc_max_stop_carga=request->getParam("stopcargasoc", true)->value().toInt();
@@ -426,19 +447,20 @@ void PortalWeb::salvarlimitesSOC(AsyncWebServerRequest *request){
     if(request->hasParam("stopdescargasoc", true)){
         _config->bateria.soc_min_stop_descarga=request->getParam("stopdescargasoc", true)->value().toInt();
     }
+
      _config->bateria.stopCargaPorVoltaje=false;
     if(request->hasParam("checkstopcargatension", true)){
         if(request->getParam("checkstopcargatension",true)->value().equals("1"))_config->bateria.stopCargaPorVoltaje=true;    
     }
     if(request->hasParam("stopcargatension", true)){
-        _config->bateria.voltajeStopCarga=request->getParam("stopcargatension", true)->value().toInt();
+        _config->bateria.voltajeStopCarga=request->getParam("stopcargatension", true)->value().toFloat()*100;
     }
     _config->bateria.stopDescargaPorVoltaje=false;
     if(request->hasParam("checkstopdescargatension", true)){
         if(request->getParam("checkstopdescargatension", true)->value().equals("1")) _config->bateria.stopDescargaPorVoltaje=true;
     }
     if(request->hasParam("stopdescargatension", true)){
-        _config->bateria.voltajeStopDescarga=request->getParam("stopdescargatension", true)->value().toInt();
+        _config->bateria.voltajeStopDescarga=request->getParam("stopdescargatension", true)->value().toFloat()*100;
     }
 
     saveConfigIntoEEPROM();
@@ -645,16 +667,16 @@ String PortalWeb::procesarReglas(const String &var){
     if(var == "RESTART_CARGA_SOC") return   String(_config->bateria.soc_min_restart_carga);
     if(var == "RESTART_DESCARGA_SOC")return String(_config->bateria.soc_max_restart_descarga);
     if(var == "STOP_DESCARGA_SOC")return    String(_config->bateria.soc_min_stop_descarga);
-    if(var == "TENSION_MAX_CARGA") return   String(_jk_bms->battery_limits.battery_charge_voltage/100);
-    if(var == "TENSION_MIN_DESCARGA") return String(_jk_bms->battery_limits.battery_discharge_voltage/100);
+    if(var == "TENSION_MAX_CARGA") return   String(_jk_bms->battery_limits.battery_charge_voltage/100.0);
+    if(var == "TENSION_MIN_DESCARGA") return String(_jk_bms->battery_limits.battery_discharge_voltage/100.0);
     if(var == "CORRIENTE_MAX_CARGA") return String(_jk_bms->battery_limits.battery_charge_current_limit);
     if(var == "CORRIENTE_MAX_DESCARGA")return String(_jk_bms->battery_limits.battery_discharge_current_limit);
     if(var == "NIVEL_SOC_BAJO")return String(_config->bateria.nivelSOCbajo); 
-
+    if(var == "CHECK_CUSTOM_TENSION") return String(_config->bateria.voltajesCargaDescargaConfigurados? "checked": "");
     if(var == "CHECK_STOP_CARGA_TENSION")return _config->bateria.stopCargaPorVoltaje? "checked" : "";
     if(var == "CHECK_STOP_DESCARGA_TENSION")return _config->bateria.stopDescargaPorVoltaje? "checked" : "";
-    if(var == "STOP_CARGA_TENSION")return String(_config->bateria.voltajeStopCarga);
-    if(var == "STOP_DESCARGA_TENSION")return String(_config->bateria.voltajeStopDescarga);
+    if(var == "STOP_CARGA_TENSION")return String(_config->bateria.voltajeStopCarga/100.0);
+    if(var == "STOP_DESCARGA_TENSION")return String(_config->bateria.voltajeStopDescarga/100.0);
     if(var == "C_RADIO_SOC") return _config->bateria.rampaCarga_mV? "" : "checked";
     if(var == "C_RADIO_MV") return _config->bateria.rampaCarga_mV? "checked" : "";
     if(var == "D_RADIO_SOC") return _config->bateria.rampaDescarga_mV? "" : "checked";
@@ -851,6 +873,7 @@ void PortalWeb::setupAccessPoint(AsyncWebServer *webserver,  Config * config, JK
     _server->on("/salvarrampadescarga",HTTP_POST, salvarrampadescarga);
     _server->on("/salvarrampacarga", HTTP_POST, salvarrampacarga);
     _server->on("/salvarlimitessoc", HTTP_POST, salvarlimitesSOC);
+    _server->on("/salvarlimitesvoltajes", HTTP_POST, salvarlimitesVoltajes);
     _server->on("/salvarnivelsocbajo", HTTP_POST, salvarNivelSocBajo);
     _server->on("/salvarcalibracionsoc", HTTP_POST, salvarcalibracionSOC);
 

@@ -82,6 +82,7 @@ void parseoColaLecturaToJk_bms_battery_info_task(void * parameters){
               //actualizarContadorEnergia();
               //ajustarSOC();  no usar 
               bajaCapacidad();
+              ajustarVoltajeCargaDescarga();
               ajustarAmperiosCargaDescarga();
               controlCargaDescarga();
               contador=0;
@@ -535,13 +536,21 @@ void enviarCANbatrium(){
   
 }
 
+/*Estable los valores de carga descarga diferentes a la JKBMS si se han configurado*/
+void ajustarVoltajeCargaDescarga(){
+  if(configuracion.bateria.voltajesCargaDescargaConfigurados){
+    jk_bms_battery_info.battery_limits.battery_charge_voltage=configuracion.bateria.voltajeMaxCarga;
+    jk_bms_battery_info.battery_limits.battery_discharge_voltage=configuracion.bateria.voltajeMinDescarga;
+  }
+}
+
 /* Establece los permisos de carga y descarga en función del SOC preconfigurado*/
 void controlCargaDescarga(){
   uint8_t soc=jk_bms_battery_info.battery_status.battery_soc;
   bool hayCambio=false;
   bool descargar=true;
   bool cargar=true;
-  uint16_t voltaje=jk_bms_battery_info.battery_status.battery_voltage/10;
+  uint16_t voltaje=jk_bms_battery_info.battery_status.battery_voltage;
   
   if(configuracion.bateria.stopCargaPorVoltaje){
     if(voltaje < configuracion.bateria.voltajeStopCarga) cargar=true;
@@ -681,33 +690,6 @@ long proporcion(long x, long in_min, long in_max, long out_min, long out_max) {
 
 
 /* Modifica el valor de carga y descarga proporcionado por JKBMS para adaptarlo a la curva de carga*/
-void ajustarAmperiosCargaDescarga2(){
-  uint16_t data=0;
-  uint8_t indices[]={0,0};
-  //uint8_t mayorSOC=0;
-  //uint8_t menorSOC=0;
-  uint16_t superiorSOC[]={79,80,85,90,95};
-  uint16_t soc=jk_bms_battery_info.battery_status.battery_soc;
-  uint16_t limiteCarga[]={jk_bms_battery_info.battery_limits.battery_charge_current_limit,
-                        configuracion.bateria.intensidad_carga.soc_80,
-                        configuracion.bateria.intensidad_carga.soc_85,
-                        configuracion.bateria.intensidad_carga.soc_90,
-                        configuracion.bateria.intensidad_carga.soc_95 };
-  getIndexLimit(soc, indices, superiorSOC, 5 );
-  data=proporcion(soc,  superiorSOC[indices[0]], superiorSOC[indices[1]], limiteCarga[indices[0]], limiteCarga[indices[1]]);
-  jk_bms_battery_info.battery_limits.battery_charge_current_limit=data;
-  
-  uint16_t inferiorSOC[]={5,10,15,20,21};
-  uint16_t limiteDescarga[]={configuracion.bateria.intensidad_descarga.soc_05,
-                            configuracion.bateria.intensidad_descarga.soc_10,
-                            configuracion.bateria.intensidad_descarga.soc_15,
-                            configuracion.bateria.intensidad_descarga.soc_20,
-                            jk_bms_battery_info.battery_limits.battery_discharge_current_limit }; 
-  getIndexLimit(soc, indices, inferiorSOC, 5 );
-  data=proporcion(soc,  inferiorSOC[indices[0]], inferiorSOC[indices[1]], limiteDescarga[indices[0]], limiteDescarga[indices[1]]);
-  jk_bms_battery_info.battery_limits.battery_discharge_current_limit=data;
-}
-
 void ajustarAmperiosCargaDescarga(){
   const int INF=0;
   const int SUP=1;

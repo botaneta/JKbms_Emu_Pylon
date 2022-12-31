@@ -52,6 +52,7 @@ class PortalWeb {
     static void salvarpylonHV(AsyncWebServerRequest *request);
     static void salvarrampadescarga(AsyncWebServerRequest *request);
     static void salvarrampacarga(AsyncWebServerRequest *request);
+    static void salvarlimitesVoltajes(AsyncWebServerRequest *request);
     static void salvarlimitesSOC(AsyncWebServerRequest *request);
     static void salvarNivelSocBajo(AsyncWebServerRequest *request);
     static void salvarcalibracionSOC(AsyncWebServerRequest *request);
