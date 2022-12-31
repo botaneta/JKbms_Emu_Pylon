@@ -19,7 +19,7 @@ ESP32 +5v--------------------------(+5v)TJA1050<br>
 
 # Instrucciones
 
-Pruebas con módulo ESP32 DevKit v1<br>
+Pruebas con módulo ESP32 DevKit v1, JK-B2A24S150P<br>
 Conectar a la WiFi del ESP32 "JKBMS_EMU_PYLONTECH" (parpadeo led azul) y configurar SSID y PASSWORD de WiFi local (fijo led azul).<br>
 Buscar ip del esp32 en wifi local y acceder a su página web para configurar.<br>
 Hacer pruebas de funcionamiento.<br>
