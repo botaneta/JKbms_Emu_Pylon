@@ -430,6 +430,10 @@ void PortalWeb::salvarlimitesVoltajes(AsyncWebServerRequest *request){
         _config->bateria.voltajeMinDescarga=voltaje;
         if(voltaje==0)_config->bateria.voltajesCargaDescargaConfigurados=false;
     }
+    if(_config->bateria.voltajesCargaDescargaConfigurados){
+        _jk_bms->battery_limits.battery_charge_voltage=_config->bateria.voltajeMaxCarga;
+        _jk_bms->battery_limits.battery_discharge_voltage=_config->bateria.voltajeMinDescarga;
+    }
     saveConfigIntoEEPROM();
     request->redirect("/reglas");
 }
@@ -472,104 +476,11 @@ void PortalWeb::salvarNivelSocBajo(AsyncWebServerRequest *request){
         uint8_t nivelSOC=(uint8_t)request->getParam("nivelsocbajo", true)->value().toInt();
         configuracion.bateria.nivelSOCbajo=nivelSOC;
         configuracionSalvarEEPROM();
-        /*
-        uint8_t buffer[23]={};
-        uint16_t size=crearTramaEscritura(buffer, 0xB1, nivelSOC,true);
-        sendRequestJKBMS(buffer, size);
-        if(configuracion.comunicarSerialDebug2){
-            Serial.printf("Enviado SOC:%d nivel bajo batería 0xB1::", nivelSOC);
-            for(int i=0; i<size; i++)Serial.printf(":%02x", buffer[i]);
-            Serial.println("\r");
-        }  
-        */     
     }
     request->redirect("/reglas");
 }
 
-void PortalWeb::salvarcalibracionSOC(AsyncWebServerRequest *request){
-    if(request->hasParam("passwordcalibracion", true)){
-        String password(request->getParam("passwordcalibracion",true)->value());
-        Serial.println(password);
-        if(password.equals(PASSWORD_CALIBRACION_SOC)){
-            Serial.println("Pasword OK");
-            if(request->hasParam("voltagecell00soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_0] =
-                request->getParam("voltagecell00soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell01soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_1] =
-                request->getParam("voltagecell01soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell02soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_2] =
-                request->getParam("voltagecell02soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell03soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_3] =
-                request->getParam("voltagecell03soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell04soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_4] =
-                request->getParam("voltagecell04soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell05soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_5] =
-                request->getParam("voltagecell05soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell07soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_7] =
-                request->getParam("voltagecell07soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell10soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_10] =
-                request->getParam("voltagecell10soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell15soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_15] =
-                request->getParam("voltagecell15soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell80soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_80] =
-                request->getParam("voltagecell80soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell85soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_85] =
-                request->getParam("voltagecell85soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell90soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_90] =
-                request->getParam("voltagecell90soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell95soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_95] =
-                request->getParam("voltagecell95soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell96soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_96] =
-                request->getParam("voltagecell96soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell97soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_97] =
-                request->getParam("voltagecell97soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell98soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_98] =
-                request->getParam("voltagecell98soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell99soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_99] =
-                request->getParam("voltagecell99soc", true)->value().toInt();
-            }
-            if(request->hasParam("voltagecell100soc",true)){
-                configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_100] =
-                request->getParam("voltagecell100soc", true)->value().toInt();
-            }
-        }
-    }
-    configuracionSalvarEEPROM();
-    request->redirect("/reglas");
 
-}
 
 
 String PortalWeb::procesarPrincipal(const String &var){
@@ -698,7 +609,6 @@ String PortalWeb::procesarReglas(const String &var){
         if(var=="C_REGLA5_SOC")return String(_config->bateria.rampaCarga.norma[4].valor[SOC]);
         if(var=="C_REGLA5_MV") return String(_config->bateria.rampaCarga.norma[4].valor[mV]);
         if(var=="C_REGLA5_AMP")return String(_config->bateria.rampaCarga.norma[4].valor[Amp]);
-
     }
 
     if(var.startsWith("D_REGLA")){
@@ -717,34 +627,7 @@ String PortalWeb::procesarReglas(const String &var){
         if(var=="D_REGLA5_SOC")return String(_config->bateria.rampaDescarga.norma[4].valor[SOC]);
         if(var=="D_REGLA5_MV") return String(_config->bateria.rampaDescarga.norma[4].valor[mV]);
         if(var=="D_REGLA5_AMP")return String(_config->bateria.rampaDescarga.norma[4].valor[Amp]);
-
     }
-
-    
-    if(var.startsWith("VOL_CELL_")){
-        if(var == "VOL_CELL_00SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_0]);
-        if(var == "VOL_CELL_01SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_1]);
-        if(var == "VOL_CELL_02SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_2]);
-        if(var == "VOL_CELL_03SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_3]);
-        if(var == "VOL_CELL_04SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_4]);
-        if(var == "VOL_CELL_05SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_5]);
-        if(var == "VOL_CELL_07SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_7]);
-        if(var == "VOL_CELL_10SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_10]);
-        if(var == "VOL_CELL_15SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_15]);
-        if(var == "VOL_CELL_80SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_80]);
-        if(var == "VOL_CELL_85SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_85]);
-        if(var == "VOL_CELL_90SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_90]);
-        if(var == "VOL_CELL_95SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_95]);
-        if(var == "VOL_CELL_96SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_96]);
-        if(var == "VOL_CELL_97SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_97]);
-        if(var == "VOL_CELL_98SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_98]);
-        if(var == "VOL_CELL_99SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_99]);
-        if(var == "VOL_CELL_100SOC")return String(_config->bateria.calibracion.voltageCell[CELL_SOC::SOC_100]);
-
-    }
-
-
-
 
     return "";
 }
@@ -875,6 +758,5 @@ void PortalWeb::setupAccessPoint(AsyncWebServer *webserver,  Config * config, JK
     _server->on("/salvarlimitessoc", HTTP_POST, salvarlimitesSOC);
     _server->on("/salvarlimitesvoltajes", HTTP_POST, salvarlimitesVoltajes);
     _server->on("/salvarnivelsocbajo", HTTP_POST, salvarNivelSocBajo);
-    _server->on("/salvarcalibracionsoc", HTTP_POST, salvarcalibracionSOC);
 
 }

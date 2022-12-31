@@ -23,8 +23,6 @@ struct METER{
 };
 
 
-
-
 struct Norma{
      uint16_t valor[3];
  };

@@ -54,9 +54,7 @@ class PortalWeb {
     static void salvarrampacarga(AsyncWebServerRequest *request);
     static void salvarlimitesVoltajes(AsyncWebServerRequest *request);
     static void salvarlimitesSOC(AsyncWebServerRequest *request);
-    static void salvarNivelSocBajo(AsyncWebServerRequest *request);
-    static void salvarcalibracionSOC(AsyncWebServerRequest *request);
-    
+    static void salvarNivelSocBajo(AsyncWebServerRequest *request);  
     
     
     static String procesarAjustes(const String &var);

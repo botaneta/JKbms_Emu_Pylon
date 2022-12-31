@@ -512,6 +512,7 @@ void mostrarMensajeCAN_Batrium(){
     Serial.println(text); 
 }
 
+/* TODO: Funcion sin terminar*/
 void enviarCANbatrium(){
   static uint8_t contador=0;
   twai_message_t mensajeCAN;
@@ -544,7 +545,7 @@ void ajustarVoltajeCargaDescarga(){
   }
 }
 
-/* Establece los permisos de carga y descarga en función del SOC preconfigurado*/
+/* Establece los permisos de carga y descarga en función del SOC preconfigurado y/o voltajes límites definidos*/
 void controlCargaDescarga(){
   uint8_t soc=jk_bms_battery_info.battery_status.battery_soc;
   bool hayCambio=false;
@@ -715,13 +716,11 @@ void ajustarAmperiosCargaDescarga(){
   } 
   getIndexLimit(valor, indice, rampaEscala, 5);
   amperios=proporcion(valor, rampaEscala[indice[INF]], rampaEscala[indice[SUP]],
-                            rampaAmperios[indice[INF]], rampaAmperios[indice[SUP]]);
-    
+                            rampaAmperios[indice[INF]], rampaAmperios[indice[SUP]]);  
   jk_bms_battery_info.battery_limits.battery_charge_current_limit=amperios;
 
 
   //rampa descarga
-  
   if(configuracion.bateria.rampaDescarga_mV){
       valor=avrcells;    
       escala=mV;

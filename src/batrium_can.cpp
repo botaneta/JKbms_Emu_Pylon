@@ -193,7 +193,3 @@ uint8_t * parseJK_message_0x00140100(uint8_t * buffer, JK_bms_battery_info * jkb
 uint8_t * parseJK_message_0x00140200(uint8_t * buffer, JK_bms_battery_info * jkbms);
 uint8_t * parseJK_message_0x00140300(uint8_t * buffer, JK_bms_battery_info * jkbms);
 uint8_t * parseJK_message_0x00140400(uint8_t * buffer, JK_bms_battery_info * jkbms);
-/** */
-uint8_t * parseJK_message_0x00140400(uint8_t * buffer, JK_bms_battery_info * jkbms){
-
-}

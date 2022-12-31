@@ -28,7 +28,7 @@ void configuracionInicial(){
     
     configuracion.bateria.soc_max_restart_descarga=25;
     configuracion.bateria.soc_min_stop_descarga=8;
-    configuracion.bateria.soc_max_stop_carga=99;
+    configuracion.bateria.soc_max_stop_carga=95;
     configuracion.bateria.soc_min_restart_carga=80;
     configuracion.bateria.nivelSOCbajo=25;
 
@@ -41,7 +41,7 @@ void configuracionInicial(){
 
     configuracion.bateria.voltajeMaxCarga=0;
     configuracion.bateria.voltajeMinDescarga=0;
-
+    /* Valores por defecto para celdas LIFEPO4 */
     configuracion.bateria.rampaCarga.norma[0].valor[SOC]=80;
     configuracion.bateria.rampaCarga.norma[0].valor[mV]=3300;
     configuracion.bateria.rampaCarga.norma[0].valor[Amp]=70;
@@ -75,11 +75,6 @@ void configuracionInicial(){
     configuracion.bateria.rampaDescarga.norma[4].valor[Amp]=0;
 
 
-
-
-    for(int i=0; i < CELL_SOC::SOC_COUNT; i++){
-        configuracion.bateria.calibracion.voltageCell[i]=curvaLFPO[i];
-    }
     strcpy(configuracion.hostName, "JKBMS_EMU_PYLON");
     configuracionSalvarEEPROM();
 }
