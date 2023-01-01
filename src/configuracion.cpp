@@ -17,7 +17,7 @@ void configuracionInicial(){
     configuracion.comunicarMQTT=false;
     configuracion.comunicarINFLUXDB=false;
     configuracion.comunicarMODBUS=false;
-
+    configuracion.protocoloCanBus=NO_CONFIGURADO;
     configuracion.batrium=false;
     configuracion.pylontechHV=false;
     configuracion.habilitarCarga=false;

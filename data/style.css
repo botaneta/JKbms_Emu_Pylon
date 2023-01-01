@@ -18,20 +18,15 @@
 
 .cabecera img{
     float:left;
-    margin: 1em 1em 1em 1em;
-
-    
-    
+    margin: 1em 1em 1em 1em;    
 }
 
 
-.cabecera .menu{
-    
+.cabecera .menu{ 
     padding: 0.5em;
     padding-top: 2.5em;
     float:right;   
     /*border: 1px solid red;*/
-   
 }
 
 .cabecera .menu a{
@@ -57,11 +52,8 @@
 }
 
 .checkbox_div {
-    
-    padding-left: 1.5em;
-    padding-bottom: 1.5em;   
+    padding: 1em;  
     font-family: Arial, Helvetica, sans-serif;
-    
 }
 
 body{
@@ -85,14 +77,12 @@ body{
 
 
 #tabla_estado, tr, td{
-    border:none;
-    
+    border:none;  
 }
 
 
 #tabla_estado{
     margin:auto;
- 
 }
 
 
@@ -125,10 +115,8 @@ body{
 }
 
 #tabla_celdas{
-  
     border: none;
-    margin:auto;
-    
+    margin:auto; 
 }
 
 #tabla_celdas caption{
@@ -162,8 +150,7 @@ body{
     border: 1px dotted white;
     border-radius: 0.5em;
     margin:0.5em;
-    text-align:center;
-    
+    text-align:center; 
 }
  
 
@@ -172,7 +159,6 @@ form {
     border-radius:1em;
     width:310px;
     margin: auto;
-
 }
 
 #reglas_div input[type='number']{
@@ -194,20 +180,16 @@ form {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#reglas_div input[type='submit']{
+input[type='submit']{
     border-radius: 0.8em;
     padding: 0.3em 1em 0.3em 1em;
     font-size:0.9em;
     font-family: Arial, Helvetica, sans-serif;
-       
-    
-    
+    margin-top: 1em;
 }
 
 #reglas_div table td:first-child {
-   
     padding: 0  0 1em 0 ;
-
 }
 
 
@@ -218,4 +200,13 @@ form {
 
 .databox input[step='0.01'] {
     min-width: 4.5em;
+}
+
+.tablarampa span {
+    position: relative;
+    top: 0.5em;
+}
+
+#protocolocan {
+    margin-top:0.25em;
 }

@@ -184,7 +184,8 @@ void envioCAN_task(void * parameters){
     } 
         
     // CAN-OK 
-    if(configuracion.pylontechHV && xQueueReceive(colaLecturaCAN_handle, &mensajeCAN, xDelay100msg)){
+    //PYLON-HV
+    if(configuracion.protocoloCanBus==PYLON_HV && xQueueReceive(colaLecturaCAN_handle, &mensajeCAN, xDelay100msg)){
         const uint32_t request=0x420; //11bits identifier
         const uint32_t request29bits=0x4200; // 29bits identifier
         const uint32_t control_request=0x620; //11bits identifier
@@ -236,22 +237,32 @@ void envioCAN_task(void * parameters){
     } //if pylonHV
 
 
-
-    if(configuracion.pylontechHV==false){    
-     
-        enviarCANpylonLV();
-        //enviarCANbatrium();
-     
+    //PYLON-LV
+    if(configuracion.protocoloCanBus==PYLON_LV){    
+        enviarCANpylonLV();     
         if(configuracion.comunicarSerialDebug1){
           Serial.printf("SEND-CAN PylonLV(%.3f)\n",millis()/1000.0);
           mostrarMensajeCAN_pylonLV();
           //mostrarMensajeCAN_Batrium();
-      
         vTaskDelay(xDelay1sg); 
         //vTaskDelay(xDelay100msg);
       }    
     } 
-           
+
+    //NO-CONFIGURADO
+    if(configuracion.protocoloCanBus==NO_CONFIGURADO){
+         vTaskDelay(xDelay1sg); 
+    }
+
+    //BATRIUM
+    if(configuracion.protocoloCanBus==BATRIUM){
+        enviarCANbatrium();
+        if(configuracion.comunicarSerialDebug1){
+          Serial.printf("SEND-CAN Batrium(%.3f)\n",millis()/1000.0);
+          mostrarMensajeCAN_Batrium();
+        }
+    }
+
     //TODO: otros protocolos  
 
   }//end while

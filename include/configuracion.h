@@ -18,6 +18,8 @@ enum CELL_SOC                 {SOC_0,SOC_1,SOC_2,SOC_3,SOC_4,SOC_5,SOC_7,SOC_10,
     SOC_COUNT
 };
 
+enum CANBUS { NO_CONFIGURADO=0, PYLON_LV=1, PYLON_HV=3, BATRIUM=5, RESERVADO1=7, RESERVADO2=9 };
+
 struct METER{
     uint32_t miliamperioSegundo;
 };
@@ -83,14 +85,13 @@ struct Config{
     bool habilitarCarga;
     bool habilitarDescarga;
     bool errorComunicacionJK;
+    CANBUS protocoloCanBus;
     Bateria bateria;
     
     uint8_t tiempoconsultaJK;
     uint8_t tiempoenvioCAN;
-    
     uint8_t ipmodbus[4];
     uint16_t portmodbus;
-    
     uint8_t ipinfluxdb[4];
     uint16_t portinfluxdb;
     char databaseinfluxdb[64];
@@ -103,7 +104,7 @@ struct Config{
     char topicmqtt[64];
     char usermqtt[32];
     char passmqtt[32];
-
+    
 
 
     char hostName[30]="JKBMS_EMU_PYLONTECH";

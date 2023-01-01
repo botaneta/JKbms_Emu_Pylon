@@ -104,6 +104,21 @@
             </div>
         </form>
         <br>
+        <form action="salvarprotocolocan" method="POST">
+            <div class="checkbox_div">
+                <label for="protocolocan">PROTOCOLO CAN BUS</label>
+                <select id="protocolocan" name="protocolocan">
+                    <option value="NoConfigurado" >NO CONFIGURADO</option>
+                    <option value="PylonLowVoltage" %SELECT_PYLON_LV%>Pylontech Low Voltage</option>
+                    <option value="PylonHighVoltage" %SELECT_PYLON_HV%>Pylontech High Voltage</option>
+                    <option value="Batrium" %SELECT_BATRIUM%>Batrium</option>
+                    <option value="Reservado1" %SELECT_RESERVADO1%>Reservado1</option>
+                    <option value="Reservado2" %SELECT_RESERVADO2%>Reservado2</option>
+                </select><br>
+                <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>
         <form action="salvarmodbusinversor" name="" method="POST">
             <div class="checkbox_div">
                 <label for="check_enable_modbus">MODBUS</label>
@@ -140,10 +155,10 @@
                 <input class="checkbox" type="checkbox" id="check_enable_mqtt" name="check-enable-mqtt"  value="1" %CHECK_MQTT%><br>
                 <br>
                 <label for="ipmqtt">IP Mqtt server  </label>
-                <input type="text" value="%IP_MQTT%" id="ipmqtt" name="ipmqtt"  pattern="([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})" title="ejemplo: 192.168.0.25">
+                <input type="text" value="%IP_MQTT%" id="ipmqtt" name="ipmqtt" size="12" pattern="([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})" title="ejemplo: 192.168.0.25">
                 </br>
                 <label for="portmqtt">Puerto Mqtt server</label>
-                <input type="number" name="portmqtt" id="portmqtt" value="%PORT_MQTT%" min="1" max="65535" title="Rango de 1 a 65535">
+                <input type="number" name="portmqtt" id="portmqtt" size="6" value="%PORT_MQTT%" min="1" max="65535" title="Rango de 1 a 65535">
                 <br>
                 <label for="topicmqtt">Tópico</label>
                 <input type="text" name="topicmqtt" id="topicmqtt" value="%TOPIC_MQTT%" maxlength="64">
@@ -241,7 +256,7 @@
         <form action="salvarrampacarga" name="" method="POST">
             <div class="checkbox_div">
                 <label><strong>Intensidad de carga&ensp;<input type="number" value="%CORRIENTE_MAX_CARGA%"  readonly size="5">A</strong></label><br>
-                <table style="border:none;">
+                <table class="tablarampa" style="border:none;">
                 <tr>
                     <td colspan="4" >   
                     <label for="radio1"><input type="radio"  name="rampacarga" id="radio1" value="rampaSOC" %C_RADIO_SOC%>Ajuste por SOC</label>
@@ -249,31 +264,31 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>#1&ensp;</td>
+                    <td><span>#1&ensp;</span></td>
                     <td><input type="number" min="0" value="%C_REGLA1_SOC%" name="regla1SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA1_MV%" name="regla1mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA1_AMP%" name="regla1Amp">A&ensp;</td>
                 </tr>
                 <tr>
-                    <td>#2&ensp;</td>
+                    <td><span>#2&ensp;</span></td>
                     <td><input type="number" min="0" value="%C_REGLA2_SOC%" name="regla2SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA2_MV%" name="regla2mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA2_AMP%" name="regla2Amp">A&ensp;</td>
                 </tr>
                 <tr>
-                    <td>#3&ensp;</td>
+                    <td><span>#3&ensp;</span></td>
                     <td><input type="number" min="0" value="%C_REGLA3_SOC%" name="regla3SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA3_MV%" name="regla3mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA3_AMP%" name="regla3Amp">A&ensp;</td>
                 </tr>
                 <tr>
-                    <td>#4&ensp;</td>
+                    <td><span>#4&ensp;</span></td>
                     <td><input type="number" min="0" value="%C_REGLA4_SOC%" name="regla4SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA4_MV%" name="regla4mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA4_AMP%" name="regla4Amp">A&ensp;</td>
                 </tr>
                 <tr>
-                    <td>#5&ensp;</td>
+                    <td><span>#5&ensp;</span></td>
                     <td><input type="number" min="0" value="%C_REGLA5_SOC%" name="regla5SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA5_MV%" name="regla5mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%C_REGLA5_AMP%" name="regla5Amp">A&ensp;</td>
@@ -289,7 +304,7 @@
         <form action="salvarrampadescarga" name="" method="POST">
             <div class="checkbox_div">
                 <label><strong>Intensidad de descarga&ensp;<input type="number" value="%CORRIENTE_MAX_DESCARGA%"  readonly size="5">A</strong></label><br>
-                <table style="border:none;">
+                <table class="tablarampa" style="border:none;">
                 <tr>
                     <td colspan="4" >   
                     <label for="radio3"><input type="radio"  name="rampadescarga" id="radio3" value="rampaSOC" %D_RADIO_SOC%>Ajuste por SOC</label>
@@ -297,31 +312,31 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>#1&ensp;</td>
+                    <td><span>#1&ensp;</span></td>
                     <td><input type="number" min="0" value="%D_REGLA1_SOC%" name="regla1SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA1_MV%" name="regla1mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA1_AMP%" name="regla1Amp">A&ensp;</td>
                 </tr>
                 <tr>
-                    <td>#2&ensp;</td>
+                    <td><span>#2&ensp;</span></td>
                     <td><input type="number" min="0" value="%D_REGLA2_SOC%" name="regla2SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA2_MV%" name="regla2mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA2_AMP%" name="regla2Amp">A&ensp;</td>
                 </tr>
                 <tr>
-                    <td>#3&ensp;</td>
+                    <td><span>#3&ensp;</span></td>
                     <td><input type="number" min="0" value="%D_REGLA3_SOC%" name="regla3SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA3_MV%" name="regla3mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA3_AMP%" name="regla3Amp">A&ensp;</td>
                 </tr>
                 <tr>
-                    <td>#4&ensp;</td>
+                    <td><span>#4&ensp;</span></td>
                     <td><input type="number" min="0" value="%D_REGLA4_SOC%" name="regla4SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA4_MV%" name="regla4mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA4_AMP%" name="regla4Amp">A&ensp;</td>
                 </tr>
                 <tr>
-                    <td>#5&ensp;</td>
+                    <td><span>#5&ensp;</span></td>
                     <td><input type="number" min="0" value="%D_REGLA5_SOC%" name="regla5SOC">&#37;&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA5_MV%" name="regla5mV">mV&ensp;</td>
                     <td><input type="number" min="0" value="%D_REGLA5_AMP%" name="regla5Amp">A&ensp;</td>

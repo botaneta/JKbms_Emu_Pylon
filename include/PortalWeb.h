@@ -46,6 +46,7 @@ class PortalWeb {
     static void salvarrs485(AsyncWebServerRequest *request);
     static void salvarmodbusinversor(AsyncWebServerRequest *request);
     static void salvarcanbus(AsyncWebServerRequest *request);
+    static void salvarprotocolocan(AsyncWebServerRequest * request);
     static void salvarserialdebug(AsyncWebServerRequest *request);
     static void salvarmqtt(AsyncWebServerRequest *request);
     static void salvarinfluxdb(AsyncWebServerRequest *request);
