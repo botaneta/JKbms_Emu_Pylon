@@ -1,12 +1,17 @@
 #include <Arduino.h>
-#include <string>
-#include "driver/i2c.h"
+//#include <string>
+//#include "driver/i2c.h"
 #include "freertos/task.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/timers.h"
 #include <DNSServer.h>
 #include "ESPAsyncWebServer.h"
+
+
+#include "AsyncElegantOTA.h"
+
+
 #include "utilidades.h"
 #include "configuracion.h"
 #include "esp_log.h"
@@ -104,6 +109,7 @@ void setupCanbus(){
                                              .single_filter = true};
   */
   //aceptar todo el trafico
+  // twai_filter_config_t f_config = TWAI_FILTER_CONFIG_ACCEPT_ALL();
   static const twai_filter_config_t f_config={.acceptance_code=0, .acceptance_mask=0xFFFFFFFF, .single_filter=true};
   //Set to NO_ACK mode due to self testing with single module
   twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(CAN_TX_GPIO, CAN_RX_GPIO, TWAI_MODE_NORMAL);
@@ -339,6 +345,7 @@ void setup(){
       wifiModeStation();
   }
 
+  AsyncElegantOTA.begin(&webserver);    // Start AsyncElegantOTA
   webserver.begin();
   Serial.println("Iniciado servidor web"); 
   delay(250);

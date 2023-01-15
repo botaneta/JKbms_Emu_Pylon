@@ -154,6 +154,7 @@ function clickReglas(){
 	document.getElementById("reglas_div").style.display="contents";
 	document.getElementById("clickReglas").style.color="white";
 	opcionmenu.value="reglas";
+	habilitarLimitesCargaDescarga(); 
 }
 
 function clickAcercade(){

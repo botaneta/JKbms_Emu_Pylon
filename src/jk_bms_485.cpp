@@ -341,19 +341,27 @@ void Parse_JK_Battery_485_Status_Frame(uint8_t *data) {
 	pos += 3;
 	//RW  0x8E 0x16 0x26: Total voltage overvoltage protection        5670 * 0.01 = 56.70V     0.01 V
 	jk_bms_battery_info.battery_limits.battery_charge_voltage = (uint16_t) data[pos + 1] << 8 | data[pos + 2];
+	
 	pos += 3;
 	//RW  0x8F 0x10 0xAE: Total voltage undervoltage protection       4270 * 0.01 = 42.70V     0.01 V
 	jk_bms_battery_info.battery_limits.battery_discharge_voltage = (uint16_t) data[pos + 1] << 8 | data[pos + 2];
 	
+	pos += 3;
 	//RW  0x90 0x10 0x68:  cell overvoltage proteccion voltage        4200 * 0.001  = 4.2V     0.001V
+	jk_bms_battery_info.battery_limits.cell_max_voltage= (uint16_t) data[pos + 1] << 8 | data[pos + 2];
+
 	//RW  0x91 0x10 0x36:  cell overvoltage recovery voltage			 4150 * 0.001  = 4.15V    0.001V	
 	//RW  0x92 0x00 0x04:  cell overvoltage proteccion is delayed  for 4 seconds  (1-60seconds)
+	
+	pos += 9;
 	//RW  0x93 0x0A 0xF0:  Cell undervoltage protection voltage		 2800 * 0.001  = 2.8V     0.001V
+	jk_bms_battery_info.battery_limits.cell_min_voltage=(uint16_t) data[pos + 1] << 8 | data[pos + 2];
+
 	//RW  0x94 0x0B 0x54:  cell undervoltage recovery voltage         2900 * 0.001  = 2.9V     0.001V
 	//RW  0x95 0x00 0x04:  cell undervoltage portection is delayed  for 4 seconds  (1-60seconds)
 	//RW  0x96 0x01 0x2C:  diferecntial voltage protection value of cell 300mV                 0.001V
 	
-	pos += 24;
+	pos += 12;
 	//RW  0x97 0x00 0x07: Discharge overcurrent protection value       7A                         1 A
 	jk_bms_battery_info.battery_limits.battery_discharge_current_limit = (uint16_t) data[pos + 1] << 8 | data[pos + 2];
 
@@ -389,7 +397,8 @@ void Parse_JK_Battery_485_Status_Frame(uint8_t *data) {
 	//RW 0xAC 0x00:      discharging MOS switch write control bit 0 close, 1 on (trigger)
 	//RW 0xAD 0x03 0xE8: current calibration 1000mA
 	//RW 0xAE 0x01:      protective board address (default 1) is reserved for use when cascading
-	pos += 12;
+	
+	pos += 14;
 	//RW 0xAF 0x01:      battery type defualt=1   (0=LiFePo 1=Li-ion 2=LTO) 
 	switch (data[pos +1]){
 		case 0 : jk_bms_battery_info.chemical=LiFePo4; break;
@@ -400,7 +409,7 @@ void Parse_JK_Battery_485_Status_Frame(uint8_t *data) {
 	};
 	
 	//RW 0xB0 0x00 0x0A: hibernation wait time initalization default 10 seconds
-	pos +=6;
+	pos +=5;
 	//RW 0xB1 0x14:      low capacity alarm value (20%)
 	jk_bms_battery_info.low_capacity_alarm_value=data[pos +1];
 	//RW 0xB2 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00: modify parameter password default 0

@@ -154,8 +154,21 @@ void send_canbus_message(uint32_t identifier, uint8_t *buffer, uint8_t length, b
   memcpy(&message.data, buffer, length);
 
   //Queue message for transmission
-  if (twai_transmit(&message, pdMS_TO_TICKS(250)) != ESP_OK){
-    ESP_LOGE(TAG, "Fail to queue message");
+  esp_err_t error=twai_transmit(&message, pdMS_TO_TICKS(250));
+  if (error != ESP_OK){
+    ESP_LOGE(TAG, "Fail to queue message  ID:%08x", identifier);
+    if(configuracion.comunicarSerialDebug2){
+      String texto="";
+      uint32_t alerts=0;
+      switch(error){
+        case ESP_ERR_INVALID_ARG: texto="ESP_ERR_INVALID_ARG"; break;
+        case ESP_ERR_TIMEOUT: texto="ESP_ERR_TIMEOUT"; break;
+        case ESP_ERR_INVALID_STATE: texto="ESP_ERR_INVALID_STATE"; break;
+        case ESP_ERR_NOT_SUPPORTED: texto="ESP_ERR_NOT_SUPPORTED  only read"; break;
+        default: twai_read_alerts(&alerts, pdMS_TO_TICKS(100)); break;
+      }
+      Serial.printf("ID:%08x  error::%s   ALERTS:%d\n", identifier, error, alerts);
+    }
     //canbus_messages_failed_sent++;
   } else {
     //ESP_LOGI(TAG, "Sent CAN message %03x", identifier);
@@ -179,12 +192,13 @@ void envioCAN_task(void * parameters){
     timerWrite((hw_timer_t *)parameters, 0); // reset timer (feed watchdog)
     //no esta habilitada comunicaciónCAN
     if(configuracion.comunicarCAN==false || configuracion.dispositivoCAN==false){ 
-      vTaskDelay(xDelay250msg);  //dar tiempo a otros hilos/tareas
+      vTaskDelay(xDelay1sg);  //dar tiempo a otros hilos/tareas
       continue;
     } 
         
     // CAN-OK 
     //PYLON-HV
+    
     if(configuracion.protocoloCanBus==PYLON_HV && xQueueReceive(colaLecturaCAN_handle, &mensajeCAN, xDelay100msg)){
         const uint32_t request=0x420; //11bits identifier
         const uint32_t request29bits=0x4200; // 29bits identifier
@@ -246,21 +260,28 @@ void envioCAN_task(void * parameters){
           //mostrarMensajeCAN_Batrium();
         vTaskDelay(xDelay1sg); 
         //vTaskDelay(xDelay100msg);
-      }    
+        }
+        continue;    
     } 
 
     //NO-CONFIGURADO
     if(configuracion.protocoloCanBus==NO_CONFIGURADO){
          vTaskDelay(xDelay1sg); 
+         continue;
     }
 
     //BATRIUM
     if(configuracion.protocoloCanBus==BATRIUM){
         enviarCANbatrium();
-        if(configuracion.comunicarSerialDebug1){
-          Serial.printf("SEND-CAN Batrium(%.3f)\n",millis()/1000.0);
-          mostrarMensajeCAN_Batrium();
-        }
+        vTaskDelay(xDelay100msg);
+        continue;
+    }
+
+    //otro protocolo de batrium
+    if(configuracion.protocoloCanBus==RESERVADO1){
+      enviarCANbatrium2();
+      vTaskDelay(xDelay100msg);
+      continue;
     }
 
     //TODO: otros protocolos  
@@ -538,6 +559,10 @@ void enviarCANbatrium(){
     send_canbus_message(ID + 0x02, parseJK_message_0x02(buffer, &jk_bms_battery_info), 8, ID_29bits);
     send_canbus_message(ID + 0x03, parseJK_message_0x03(buffer, &jk_bms_battery_info), 8, ID_29bits);
     send_canbus_message(ID + 0x05, parseJK_message_0x05(buffer, &jk_bms_battery_info), 8, ID_29bits);
+    if(configuracion.comunicarSerialDebug2){
+          Serial.printf("SEND-CAN Batrium(%.3f)\n",millis()/1000.0);
+          //mostrarMensajeCAN_Batrium();
+        }
   }
   //cada 100msg
   send_canbus_message(ID + 0x01, parseJK_message_0x01(buffer, &jk_bms_battery_info), 8, ID_29bits);
@@ -546,6 +571,31 @@ void enviarCANbatrium(){
   send_canbus_message(ID + 0x07, parseJK_message_0x07(buffer, &jk_bms_battery_info), 8, ID_29bits);
   contador++;
   
+}
+
+void enviarCANbatrium2(){
+  static uint8_t contador=0;
+  twai_message_t mensajeCAN;
+  const bool ID_29bits=true;
+  uint8_t buffer[8];
+  if(contador>=10){
+    contador=0;
+    //cada 1000msg
+    send_canbus_message(0x00111200, parseJK_message_0x00111200(buffer, &jk_bms_battery_info), 8, ID_29bits);
+    send_canbus_message(0x00111300, parseJK_message_0x00111300(buffer, &jk_bms_battery_info), 7, ID_29bits);
+    send_canbus_message(0x00140100, parseJK_message_0x00140100(buffer, &jk_bms_battery_info), 8, ID_29bits);
+    send_canbus_message(0x00140200, parseJK_message_0x00140200(buffer, &jk_bms_battery_info), 4, ID_29bits);
+    send_canbus_message(0x00140300, parseJK_message_0x00140300(buffer, &jk_bms_battery_info), 8, ID_29bits);
+    send_canbus_message(0x00140400, parseJK_message_0x00140400(buffer, &jk_bms_battery_info), 6, ID_29bits);
+    //send_canbus_message(0x00140500, parseJK_message_0x00140500(buffer, &jk_bms_battery_info), 6, ID_29bits);
+    if(configuracion.comunicarSerialDebug1){
+      Serial.printf("SEND-CAN Batrium2(%.3f)\n",millis()/1000.0);
+    }
+  }
+  //cada 100msg
+  send_canbus_message(0x00111100, parseJK_message_0x00111100(buffer, &jk_bms_battery_info), 6, ID_29bits);
+  send_canbus_message(0x00111500, parseJK_message_0x00111500(buffer, &jk_bms_battery_info), 8, ID_29bits);
+  contador++;
 }
 
 /*Estable los valores de carga descarga diferentes a la JKBMS si se han configurado*/
@@ -663,7 +713,7 @@ void ajustarSOC(){
     jk_bms_battery_info.battery_status.battery_soc=socJK;
 }
 
-/* devuelve indices de posición de soc con respecto a un escala definada en una array ascendente*/
+/* devuelve indices de posición, donde esta el soc con, respecto a un escala definada en una array ascendente*/
 uint8_t * getIndexLimit(uint16_t soc, uint8_t *indexLimit, uint16_t * arrayEscalaAscnd, uint16_t sizearrayEscalaAscnd){
   
   for(int i=0; i < sizearrayEscalaAscnd; i++){
@@ -689,8 +739,9 @@ uint8_t * getIndexLimit(uint16_t soc, uint8_t *indexLimit, uint16_t * arrayEscal
   return indexLimit;
 } 
 
-/** funcion auxiliar calcula proporción/diferencia out en funcion de in,excepto si no hay diferencia*/
-long proporcion(long x, long in_min, long in_max, long out_min, long out_max) {
+/** funcion auxiliar calcula para el valor X, la salida dentro de los limites de salida out,  
+ * en ralación con los limites de entrada in, excepto si no hay diferencia*/
+long interpolacion(long x, long in_min, long in_max, long out_min, long out_max) {
     const long dividend = out_max - out_min;
     const long divisor = in_max - in_min;
     const long delta = x - in_min;
@@ -726,7 +777,7 @@ void ajustarAmperiosCargaDescarga(){
     rampaEscala[i]=configuracion.bateria.rampaCarga.norma[i].valor[escala];
   } 
   getIndexLimit(valor, indice, rampaEscala, 5);
-  amperios=proporcion(valor, rampaEscala[indice[INF]], rampaEscala[indice[SUP]],
+  amperios=interpolacion(valor, rampaEscala[indice[INF]], rampaEscala[indice[SUP]],
                             rampaAmperios[indice[INF]], rampaAmperios[indice[SUP]]);  
   jk_bms_battery_info.battery_limits.battery_charge_current_limit=amperios;
 
@@ -744,7 +795,7 @@ void ajustarAmperiosCargaDescarga(){
     rampaEscala[z]=configuracion.bateria.rampaDescarga.norma[i].valor[escala];
   } 
   getIndexLimit(valor, indice, rampaEscala, 5);
-  amperios=proporcion(valor, rampaEscala[indice[INF]], rampaEscala[indice[SUP]],
+  amperios=interpolacion(valor, rampaEscala[indice[INF]], rampaEscala[indice[SUP]],
                             rampaAmperios[indice[INF]], rampaAmperios[indice[SUP]]);
   jk_bms_battery_info.battery_limits.battery_discharge_current_limit=amperios;                      
   

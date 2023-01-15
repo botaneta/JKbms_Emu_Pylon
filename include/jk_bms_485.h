@@ -25,6 +25,8 @@ struct jk_bms_limits {
 	uint16_t battery_charge_current_limit;
 	uint16_t battery_discharge_current_limit;
 	uint16_t battery_discharge_voltage;
+	uint16_t cell_max_voltage;
+	uint16_t cell_min_voltage;
 };
 
 

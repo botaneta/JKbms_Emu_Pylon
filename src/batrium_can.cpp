@@ -183,13 +183,182 @@ uint8_t * parseJK_message_0x07(uint8_t * buffer, JK_bms_battery_info * jkbms){
 
 
 
+/* Live telemetry cell voltage limits data length 6bytes  TX FREQ:100mSg */
+uint8_t * parseJK_message_0x00111100(uint8_t * buffer, JK_bms_battery_info * jkbms){
+    //Min cell voltage uint16_t unit 1mV
+    buffer[0]=(uint8_t)(jkbms->battery_limits.cell_min_voltage & 0xFF);  //lsb
+    buffer[1]=(uint8_t)(jkbms->battery_limits.cell_min_voltage >> 8);  //msb
+    //max cell voltage
+    buffer[2]=(uint8_t)(jkbms->battery_limits.cell_max_voltage & 0xFF);
+    buffer[3]=(uint8_t)(jkbms->battery_limits.cell_max_voltage >> 8);
+    //min voltage nCell
+    buffer[4]=10;
+    //max voltage nCell
+    buffer[5]=15;
+    return buffer;
+}
 
-uint8_t * parseJK_message_0x00111100(uint8_t * buffer, JK_bms_battery_info * jkbms);
-uint8_t * parseJK_message_0x00111200(uint8_t * buffer, JK_bms_battery_info * jkbms);
-uint8_t * parseJK_message_0x00111300(uint8_t * buffer, JK_bms_battery_info * jkbms);
-uint8_t * parseJK_message_0x00111500(uint8_t * buffer, JK_bms_battery_info * jkbms);
+/* Live telemetry cell temperature limits  data length 8bytes  TX FREQ:1000mSg */
+uint8_t * parseJK_message_0x00111200(uint8_t * buffer, JK_bms_battery_info * jkbms){
+    // min cell temperature 
+    buffer[0]=0 + 40; //0ºC + 40 offset
+    //max cell temperature
+    buffer[1]=70 + 40;
+    //min temp nCell
+    buffer[2]=5;
+    //max temp nCell
+    buffer[3]=11;
+    //min bypass Temperature
+    buffer[4]=0 + 40; //0ºC + 40 offset
+    //max bypass Temperature
+    buffer[5]=70 + 40;
+    //min bypassTemperature nCell
+    buffer[6]=6;
+    //max bypassTemperature nCell
+    buffer[7]=12;
+     return buffer;
+}
 
-uint8_t * parseJK_message_0x00140100(uint8_t * buffer, JK_bms_battery_info * jkbms);
-uint8_t * parseJK_message_0x00140200(uint8_t * buffer, JK_bms_battery_info * jkbms);
-uint8_t * parseJK_message_0x00140300(uint8_t * buffer, JK_bms_battery_info * jkbms);
-uint8_t * parseJK_message_0x00140400(uint8_t * buffer, JK_bms_battery_info * jkbms);
+/* Live telemetry Cell bypass limits  data length 7bytes TX FREQ:1000mSg */
+uint8_t * parseJK_message_0x00111300(uint8_t * buffer, JK_bms_battery_info * jkbms){
+    // min bypass PWM % unit 1% 0-100
+    buffer[0]=1;
+    // max bypass PWM % unit 1%  0-100
+    buffer[1]=100;
+    //Min bypass nCell
+    buffer[2]=0;
+    //Max bypass nCell
+    buffer[3]=24;
+    //number in initial bypass
+    buffer[4]=2;
+    //number in final bypass
+    buffer[5]=4;
+    //number in bypass
+    buffer[6]=3;
+    return buffer;
+}
+
+/* Live telemetry shunt power monitoring data length 8byte  TX FREQ:100mSg */
+uint8_t * parseJK_message_0x00111500(uint8_t * buffer, JK_bms_battery_info * jkbms){
+    //SOC -10% to 110%  offset 10%  unit 0.5%
+    buffer[0]=jkbms->battery_status.battery_soc;
+    //Shunt temperature -40 to 125ºC  offset 40ºC unit 1ºC
+    buffer[1]=jkbms->battery_status.power_tube_temperature + 40 ;
+    //shunt voltage uint16_t unit 0.01V
+    buffer[2]=(uint8_t)(jkbms->battery_status.battery_voltage & 0xFF);
+    buffer[3]=(uint8_t)(jkbms->battery_status.battery_voltage >> 8);
+    //Shunt amperes float unit 1mA
+    float current=jkbms->battery_status.battery_current * 1000;
+    buffer[4]=(uint8_t)((uint32_t)current & 0xFF); 
+    buffer[5]=(uint8_t)((((uint32_t)current) >> 8) & 0xFF);
+    buffer[6]=(uint8_t)((((uint32_t)current) >> 16) & 0xFF);
+    buffer[7]=(uint8_t)((((uint32_t)current) >> 24) & 0xFF);
+    return buffer;
+}
+
+/* Control logic Critical Warning state data length 8bytes  TX FREQ:1000mSg */
+uint8_t * parseJK_message_0x00140100(uint8_t * buffer, JK_bms_battery_info * jkbms){
+    //Critical control mode 0x00=auto, 0x01=Manual_ON, 0x02=Manual_OFF
+    buffer[0]=0x00;
+    //Critical control flags b0=OnState(relay state), b1=OnCalc(live analysis), b2=input run state, b3=has overdue cell sensor
+    buffer[1]=0x00;
+    //Critical monitor flags1 b0=has low cell voltage, b1=has high cell voltage, b2=has low cell temperature, b3=has hight cell temp
+    //                      b4=has low supply voltage,  b5=has hight supply voltage, b6=has low ambient temperature, b7=has hight ambient temperature
+    uint8_t monitor=0x00;
+    if(jkbms->battery_alarms.cell_undervoltage) monitor = monitor| 0x01;
+    if(jkbms->battery_alarms.cell_overvoltage)monitor = monitor | 0x02;
+    if(jkbms->battery_alarms.battery_low_temperature) monitor = monitor | 0x04;
+    if(jkbms->battery_alarms.battery_over_temperature) monitor = monitor | 0x08;
+    if(jkbms->battery_alarms.discharging_undervoltage) monitor = monitor | 0x10;
+    if(jkbms->battery_alarms.charging_overvoltage) monitor = monitor | 0x20;
+    buffer[2]=monitor;
+
+
+    //Critical control flags2 b0=has low shunt voltage, b1=has hight shunt voltage, b2=has low idle voltage, 
+    //                          b3=has max charging current, b4=has max discharging current
+    uint8_t monitor2=0x00;
+    if(jkbms->battery_alarms.charging_overcurrent)monitor2 = monitor2 | 0x08;
+    if(jkbms->battery_alarms.discharging_overcurrent)monitor2 = monitor2 | 0x10;
+    buffer[3]=monitor2;
+
+    //Warning Control mode  0x00=auto, 0x01=Manual_ON, 0x02=Manual_OFF
+    buffer[4]=0x00;
+
+    //Warning Control flags b0=OnState(relay state), b1=OnCalc(live analysis)
+    buffer[5]=0x00;
+
+    //Warning control flags1 b0=has low cell voltage, b1=has high cell voltage, b2=has low cell temp,  b3=has hight cell temp
+    //                       b4=has low supply voltage, b5=has hight supply voltage, b6=has low ambient temp, b7=has hight ambient temp
+    buffer[6]=0x00;
+
+    //Warning control flags2 b=0has low shunt voltage, b1=has hight shunt voltage, b2=has low shunt SOC, b3=has hight shunt SOC
+    //                       b4=has max charging current, b5=has max discharging current
+    buffer[7]=0x00;
+    return buffer;
+}
+
+/* Control logic thermal state data length 4bytes TX FREQ:1000mSg*/
+uint8_t * parseJK_message_0x00140200(uint8_t * buffer, JK_bms_battery_info * jkbms){
+    //Head control mode  0x00=auto, 0x01=Manual_ON, 0x02=Manual_OFF
+    buffer[0]=0x00;
+    //Head contol flags b0=OnState(relay state), b1=OnCalc(live analysis), b2=has low cell temperature, b3=has low ambient temp
+    buffer[1]= jkbms->battery_alarms.battery_low_temperature? 0x0C : 0x00;
+
+    //Cool control mode  0x00=auto, 0x01=Manual_ON, 0x02=Manual_OFF
+    buffer[2]=0x00;
+
+    //Cool control flags  b0=OnState(relay state), b1=OnCalc(live analysis), b2=has high cell temperature, 
+    //                    b3=has high ambient temp,  b4=has cells in bypass
+    buffer[3]= jkbms->battery_alarms.battery_over_temperature? 0x0C : 0x00;
+    return buffer;
+}
+
+
+/* Control Logic - Charging state data length 8byte  TX FREQ:1000mSg */
+uint8_t * parseJK_message_0x00140300(uint8_t * buffer, JK_bms_battery_info * jkbms){
+    //charge control mode  0x00=auto, 0x01=Manual_ON, 0x02=Manual_OFF
+    buffer[0]=0x00; //configuracion.habilitarCarga? 0x01 : 0x02;
+    //charge control flags   b0=OnState(relay state), b1=OnCalc(live analysis), b2=low power evoked, b3=has bypass overheated
+    //                       b4=has bypass above initial, b5=has bypass above final, b6=has cells in bypass, b7=cells are fully charged                         
+    // TODO: implementar todo los bits
+    buffer[1]=0x01;
+    //Target current uint16_t  unit_jk 1A    unit_batrium 0.1A
+    uint16_t current=jkbms->battery_limits.battery_charge_current_limit * 10;
+    buffer[2]=(uint8_t)(current & 0xFF);
+    buffer[3]=(uint8_t)(current >> 8);
+    //Target powerVA uint16_t  unit 1VA
+    uint16_t voltage=jkbms->battery_limits.battery_charge_voltage / 100; // 10.01V -> 10V
+    uint16_t power=voltage * jkbms->battery_limits.battery_charge_current_limit;
+    buffer[4]=(uint8_t)(power & 0xFF);
+    buffer[5]=(uint8_t)(power >> 8);
+    //Target Voltage uint16_t unit_jk 0.01V  unit_batrium 0.01V
+    buffer[6]=(uint8_t)(jkbms->battery_limits.battery_charge_voltage & 0xFF);
+    buffer[7]=(uint8_t)(jkbms->battery_limits.battery_charge_voltage >> 8);
+    return buffer;
+}
+
+/* Control Logic – Discharging state   dataLength 6byte  TX FREQ:1000mSg*/
+uint8_t * parseJK_message_0x00140400(uint8_t * buffer, JK_bms_battery_info * jkbms){
+    //discharge control mode  0x00=auto, 0x01=Manual_ON, 0x02=Manual_OFF
+    buffer[0]=0x00;
+    //discharge control flags  b0=OnState(relay state), b1=OnCalc(live analysis), b2=low power evoked
+    // TODO: implementar todos los bits
+    buffer[1]=0x01;
+    //Target current uint16_t  unit_jk 1A    unit_batrium 0.1A
+    uint16_t current=jkbms->battery_limits.battery_discharge_current_limit * 10;
+    buffer[2]=(uint8_t)(current & 0xFF);
+    buffer[3]=(uint8_t)(current >> 8);
+    //Target powerVA uint16_t  unit 1VA
+    uint16_t voltage=jkbms->battery_limits.battery_discharge_voltage / 100; // 10.01V -> 10V
+    uint16_t power=voltage * jkbms->battery_limits.battery_discharge_current_limit;
+    buffer[4]=(uint8_t)(power & 0xFF);
+    buffer[5]=(uint8_t)(power >> 8);
+    return buffer;
+}
+
+/* Control Logic */
+uint8_t * parseJK_message_0x00140500(uint8_t * buffer, JK_bms_battery_info * jkbms){
+
+
+    return buffer;
+}

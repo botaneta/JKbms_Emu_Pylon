@@ -199,6 +199,8 @@ void parseJK_JSON(DynamicJsonDocument &docjson, JK_bms_battery_info * jkbms, Con
     docjson["cell_voltage_average"]=jkbms->cell_Vavrg;
     docjson["cell_number_vmin"]=    jkbms->cell_number_vmin;
     docjson["cell_number_vmax"]=    jkbms->cell_number_vmax;
+    docjson["cell_Vmax_limit"]=     jkbms->battery_limits.cell_max_voltage;
+    docjson["cell_Vmin_limit"]=     jkbms->battery_limits.cell_min_voltage;
     docjson["delta_cell_voltage"]=  jkbms->delta_cell_voltage;
     docjson["number_cells"]=        jkbms->cells_number;
     docjson["soh"]=                 jkbms->battery_status.battery_soh;
