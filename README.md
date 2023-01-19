@@ -1,8 +1,8 @@
-
+<h1 align="center">
     <a href="#">
         <img src="https://github.com/botaneta/JKbms_Emu_Pylon/data/logoBlack68.png" width="30%">
     </a>
-
+</h1>
 
 
 # JKbms_Emu_Pylon
