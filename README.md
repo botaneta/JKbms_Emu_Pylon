@@ -1,10 +1,8 @@
-<h1 align="center">
-    FreeDS
-    <br>
+
     <a href="#">
         <img src="https://github.com/botaneta/JKbms_Emu_Pylon/data/logoBlack68.png" width="30%">
     </a>
-</h1>
+
 
 
 # JKbms_Emu_Pylon
@@ -31,7 +29,7 @@ ESP32 +5v--------------------------(+5v)TJA1050<br>
 
 # Instrucciones
 
-Mis pruebas se han realizado con módulo ESP32 DevKit v1, un transceptor CAN, BMS  JK-B2A24S15P y un inversor marca Ingeteam<br>
+Las pruebas se han realizado con módulo ESP32 DevKit v1, un transceptor CAN, BMS  JK-B2A24S15P y un inversor marca Ingeteam<br>
 En el primer inicio el módulo crea un punto de acceso WIFI llamado "JKBMS_EMU_PYLONTECH" el led azul parpadea<br>
 Al conectarse a este punto de acceso se debe configurar SSID y PASSWORD de WiFi local el modulo se reincia y el led azul deja de parpadear al tener conexión WIFI<br>
 Buscar ip del esp32 en wifi local y acceder a su página web para configurar su funcionamiento<br>
