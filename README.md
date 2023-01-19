@@ -1,6 +1,6 @@
 <h1 align="center">
     <a href="#">
-        <img src="https://github.com/botaneta/JKbms_Emu_Pylon/data/logoBlack68.png" width="30%">
+        <img src="https://https://github.com/botaneta/JKbms_Emu_Pylon/blob/master/data/logoBlack68.png">
     </a>
 </h1>
 
