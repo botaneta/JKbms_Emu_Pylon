@@ -1,3 +1,9 @@
+<h1 align="center">
+    <a href="#">
+        <img src="https://github.com/botaneta/JKbms_Emu_Pylon/blob/master/data/logoBlack68.png">
+    </a>
+</h1>
+
 # JKbms_Emu_Pylon
 ¡¡ATENCIÓN NO USE ESTE SOFTWARE, USTED ES EL RESPONSABLE DE LOS DAÑOS PERSONALES O MATERIALES QUE PUEDAN SUCEDER!!<br>
 Software solo para pruebas y/o apredizaje, NO SE RECOMIENDA SU USO.<br> 
