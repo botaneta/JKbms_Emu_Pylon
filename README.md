@@ -28,13 +28,9 @@ ESP32 +5v--------------------------(+5v)TJA1050<br>
 
 # Instrucciones
 
-Las pruebas se han realizado con módulo ESP32 DevKit v1, un transceptor CAN, BMS  JK-B2A24S15P y un inversor marca Ingeteam<br>
-En el primer inicio el módulo crea un punto de acceso WIFI llamado "JKBMS_EMU_PYLONTECH" el led azul parpadea<br>
-Al conectarse a este punto de acceso se debe configurar SSID y PASSWORD de WiFi local el modulo se reincia y el led azul deja de parpadear al tener conexión WIFI<br>
-Buscar ip del esp32 en wifi local y acceder a su página web para configurar su funcionamiento<br>
-La interfaz web presenta la página principal donde se muestra los valores actuales de tensión, corriente y alarmas del bms<br>
-En el apartado de ajustes, se puede activar la comunicación con el bms jk, selecionar el protocolo CAN de comunicaciones, también establecer el broker para MQTT<br>
-En el apartado de reglas, se pueden modificar los valores de tensión de carga y descarga (por defecto toma los valores del bms jk), se puede establecer los valores de SOC de  parada y reanudación en la carga y descarga, también se puede establecer en carga y descarga una rampa de corriente, en función del SOC o la tensión media de celdas<br>
+Pruebas con módulo ESP32 DevKit v1<br>
+Conectar a la WiFi del ESP32 "JKBMS_EMU_PYLONTECH" (parpadeo led azul) y configurar SSID y PASSWORD de WiFi local (fijo led azul).<br>
+Buscar ip del esp32 en wifi local y acceder a su página web para configurar.<br>
 Hacer pruebas de funcionamiento.<br>
 
 
@@ -44,13 +40,12 @@ Se prueba el protocolo de alto voltaje con exito. El protocolo de bajo, por mi c
 Se prueba la rampa de carga con exito, el inversor adapta la corriente carga a los valores configurados en el esp32, los valores de corriente enviados al inversor entre escalas de SOC, es proporcional<br>
 Se prueba con exito el control ante un posible fallo de comunicación entre en esp32 y la jkbms para poder parar toda actividad con el inversor.<br>
 Se prueba con exito la perdida de conexión CAN y reconexión con el inversor<br>
-Se prueba con exito la publicación de mensajes MQTT con el estado de la batería<br>
 
 
 # TODO List
 <ul>
 <li>Mejorar la interfaz web, página de configuración Wifi, etc.</li>
-<li>Añadir comandos de control por MQTT.</li>
+<li>Añadir mensajes por MQTT.</li>
 <li>Añadir mensajes para INFLUXDB.</li>
 <li>Añadir pantalla led para mostrar datos básicos.</li>
 <li>Poner la batería en reposo/activa cuando lo solicite el inversor.</li>
