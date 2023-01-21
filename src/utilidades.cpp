@@ -180,6 +180,7 @@ String bufferToString(String text, uint8_t * buffer){
     return text;      
 }
 
+/* Función que pasa las información actual del bms y configuración a un documento JSON */
 void parseJK_JSON(DynamicJsonDocument &docjson, JK_bms_battery_info * jkbms, Config * config){
     
     docjson["ID"]=                  jkbms->ID;

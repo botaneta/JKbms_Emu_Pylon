@@ -10,7 +10,6 @@ void configuracionInicial(){
     configuracion.dispositivoCAN=false;
     configuracion.comunicarJKrs485=false;
     configuracion.comunicarCAN=false;
-    configuracion.consoleLog=false;
     configuracion.comunicarSerialDebug=false;
     configuracion.comunicarSerialDebug1=false;
     configuracion.comunicarSerialDebug2=false;
@@ -18,8 +17,6 @@ void configuracionInicial(){
     configuracion.comunicarINFLUXDB=false;
     configuracion.comunicarMODBUS=false;
     configuracion.protocoloCanBus=NO_CONFIGURADO;
-    configuracion.batrium=false;
-    configuracion.pylontechHV=false;
     configuracion.habilitarCarga=false;
     configuracion.habilitarDescarga=false;
 

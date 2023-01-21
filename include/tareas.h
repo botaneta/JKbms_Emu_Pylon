@@ -5,27 +5,22 @@
 #include <EEPROM.h>
 #include <WiFi.h>
 #include <AsyncMqttClient.h>
-#include "freertos/task.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/queue.h"
-#include "freertos/timers.h"
-#include "freertos/semphr.h"
+#include <freertos/task.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+#include <freertos/timers.h>
+#include <freertos/semphr.h>
+#include <driver/twai.h>  //canbus
 #include "jk_bms_485.h"
 #include "utilidades.h"
 #include "configuracion.h"
-#include "driver/twai.h"  //canbus
 
 
 //variables globales declaradas en main.cpp
-
 extern METER meter;
-
 extern struct Config  configuracion;
-
 extern uint8_t bufferStream[512];   //cambiar a 512 pruebas reales
-
 extern uint8_t bufferReceiver[512];  
-
 extern AsyncMqttClient mqtt;
 
 
@@ -68,20 +63,17 @@ void recibirCAN_task(void * parameters);
 void enviarDatosMqtt_task(void * parameters);
 
 //funciones auxiliares
-/** Actualiza los permisos de carga y descarga para el inversor en funcion del soc*/
+
 void ajustarVoltajeCargaDescarga();
 void controlCargaDescarga();
-void actualizarContadorEnergia();
-void ajustarSOC();
 void ajustarAmperiosCargaDescarga();
 void enviarCANpylonLV();
 void enviarCANpylonHV(bool ID_29bits);
 void enviarCANpylonHVinfoSystem(bool ID_29bits);
-void enviarCANbatrium();
-void enviarCANbatrium2();
 void mostrarMensajeCAN_pylonHV();
 void mostrarMensajeCAN_pylonLV();
-void mostrarMensajeCAN_Batrium();
+void procesarComandoMQTT(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
+
 
 
 

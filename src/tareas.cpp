@@ -2,7 +2,6 @@
 #include "tareas.h"
 #include "pylon_can.h"
 #include "pylonHV_can.h"
-#include "batrium_can.h"
 #include "jk_bms_485.h"
 #include "utilidades.h"
 #include "PortalWeb.h"
@@ -187,10 +186,9 @@ void envioCAN_task(void * parameters){
   const TickType_t xDelay1sg = 1000 * portTICK_PERIOD_MS; //repeticiones cada 1000msg
   twai_message_t mensajeCAN;
   
-  
   while(true){
     timerWrite((hw_timer_t *)parameters, 0); // reset timer (feed watchdog)
-    //no esta habilitada comunicaciónCAN
+    // Está habilitada comunicaciónCAN?
     if(configuracion.comunicarCAN==false || configuracion.dispositivoCAN==false){ 
       vTaskDelay(xDelay1sg);  //dar tiempo a otros hilos/tareas
       continue;
@@ -257,9 +255,7 @@ void envioCAN_task(void * parameters){
         if(configuracion.comunicarSerialDebug1){
           Serial.printf("SEND-CAN PylonLV(%.3f)\n",millis()/1000.0);
           mostrarMensajeCAN_pylonLV();
-          //mostrarMensajeCAN_Batrium();
-        vTaskDelay(xDelay1sg); 
-        //vTaskDelay(xDelay100msg);
+          vTaskDelay(xDelay1sg); 
         }
         continue;    
     } 
@@ -270,17 +266,17 @@ void envioCAN_task(void * parameters){
          continue;
     }
 
-    //BATRIUM
-    if(configuracion.protocoloCanBus==BATRIUM){
-        enviarCANbatrium();
-        vTaskDelay(xDelay100msg);
-        continue;
+
+    //OTRO PROTOCOLO 
+    if(configuracion.protocoloCanBus==RESERVADO1){
+      if(configuracion.comunicarSerialDebug1)Serial.println("Protocolo no implementado");
+      vTaskDelay(xDelay1sg);
+      continue;
     }
 
-    //otro protocolo de batrium
-    if(configuracion.protocoloCanBus==RESERVADO1){
-      enviarCANbatrium2();
-      vTaskDelay(xDelay100msg);
+    if(configuracion.protocoloCanBus==RESERVADO2){
+      if(configuracion.comunicarSerialDebug1)Serial.println("Protocolo no implementado");
+      vTaskDelay(xDelay1sg);
       continue;
     }
 
@@ -288,6 +284,7 @@ void envioCAN_task(void * parameters){
 
   }//end while
 }
+
 
 void recibirCAN_task(void * parameters){
   const TickType_t xDelay250msg = 250 * portTICK_PERIOD_MS; //pausa de 250msg
@@ -472,8 +469,10 @@ void enviarCANpylonHVinfoSystem(bool ID_29bits=false){
   }
 }
 
+
+
+
 void enviarDatosMqtt_task(void * parameters){
-  
   while(true){
     if(configuracion.comunicarMQTT && WiFi.isConnected()){
       if(mqtt.connected()){
@@ -486,7 +485,15 @@ void enviarDatosMqtt_task(void * parameters){
         IPAddress ipmqtt(configuracion.ipmqtt[0], configuracion.ipmqtt[1], configuracion.ipmqtt[2], configuracion.ipmqtt[3]);
         mqtt.setCredentials(configuracion.usermqtt, configuracion.passmqtt);
         mqtt.setServer(ipmqtt, configuracion.portmqtt);
+        mqtt.onMessage(procesarComandoMQTT);
+        mqtt.onSubscribe([](uint16_t packetId, uint8_t qos){ Serial.println("Suscrito al topic"); });
+        mqtt.onConnect([](bool sessionPresent){
+          String topic(configuracion.topicmqtt);
+          topic.concat("/comando");
+          mqtt.subscribe(topic.c_str(), 2);
+        });
         mqtt.connect();
+        if(configuracion.comunicarSerialDebug2)Serial.println("Configurado servicio mqtt");
       }
     }else{
       mqtt.clearQueue();
@@ -496,107 +503,7 @@ void enviarDatosMqtt_task(void * parameters){
   }
 }
 
-void mostrarMensajeCAN_Batrium(){
-    uint8_t buffer[8];
-    String text="";
-    text="\n\n";
 
-    parseJK_message_0x00(buffer, &jk_bms_battery_info);
-    text+="ID + 0x00::";
-    text=bufferToString(text, buffer);
-    text+="\tDevice versioning\n";
-
-    parseJK_message_0x01(buffer, &jk_bms_battery_info);
-    text+="ID + 0x01::";
-    text=bufferToString(text, buffer);
-    text+="\tVmin, Vmax, Vavrg, Nmin, Nmax\n";
-
-    parseJK_message_0x02(buffer, &jk_bms_battery_info);
-    text+="ID + 0x02::";
-    text=bufferToString(text, buffer);
-    text+="\tTmin, Tmax, Tavrg, nTmin, nTmax\n";
-
-    parseJK_message_0x03(buffer, &jk_bms_battery_info);
-    text+="ID + 0x03::";
-    text=bufferToString(text, buffer);
-    text+="\tnCells balance, N_init, N_end, reserved\n";
-
-    parseJK_message_0x04(buffer, &jk_bms_battery_info);
-    text+="ID + 0x04::";
-    text=bufferToString(text, buffer);
-    text+="\tVoltaje, amperios, potencia \n";
-
-    parseJK_message_0x05(buffer, &jk_bms_battery_info);
-    text+="ID + 0x05::";
-    text=bufferToString(text, buffer);
-    text+="\tSOC, SOH, Ah_remaing, AH_nominal\n";
-
-    parseJK_message_0x06(buffer, &jk_bms_battery_info);
-    text+="ID + 0x06::";
-    text=bufferToString(text, buffer);
-    text+="\tV_charge, A_Charge, V_discharge, A_Discharge\n";
-
-    parseJK_message_0x07(buffer, &jk_bms_battery_info);
-    text+="ID + 0x07::";
-    text=bufferToString(text, buffer);
-    text+="\tCritical, charge, discharge, heat, cool, balance FLAGS\n";
-
-    Serial.println(text); 
-}
-
-/* TODO: Funcion sin terminar*/
-void enviarCANbatrium(){
-  static uint8_t contador=0;
-  twai_message_t mensajeCAN;
-  const bool ID_29bits=true;
-  uint8_t buffer[8];
-  /* Se establece un batrium ID:0x00000000 id_extend*/
-  uint32_t ID=0x00000000;
-  if(contador>=10){
-    contador=0;
-    //cada 1000msg
-    send_canbus_message(ID + 0x00, parseJK_message_0x00(buffer, &jk_bms_battery_info), 8, ID_29bits);
-    send_canbus_message(ID + 0x02, parseJK_message_0x02(buffer, &jk_bms_battery_info), 8, ID_29bits);
-    send_canbus_message(ID + 0x03, parseJK_message_0x03(buffer, &jk_bms_battery_info), 8, ID_29bits);
-    send_canbus_message(ID + 0x05, parseJK_message_0x05(buffer, &jk_bms_battery_info), 8, ID_29bits);
-    if(configuracion.comunicarSerialDebug2){
-          Serial.printf("SEND-CAN Batrium(%.3f)\n",millis()/1000.0);
-          //mostrarMensajeCAN_Batrium();
-        }
-  }
-  //cada 100msg
-  send_canbus_message(ID + 0x01, parseJK_message_0x01(buffer, &jk_bms_battery_info), 8, ID_29bits);
-  send_canbus_message(ID + 0x04, parseJK_message_0x04(buffer, &jk_bms_battery_info), 8, ID_29bits);
-  send_canbus_message(ID + 0x06, parseJK_message_0x06(buffer, &jk_bms_battery_info), 8, ID_29bits); 
-  send_canbus_message(ID + 0x07, parseJK_message_0x07(buffer, &jk_bms_battery_info), 8, ID_29bits);
-  contador++;
-  
-}
-
-void enviarCANbatrium2(){
-  static uint8_t contador=0;
-  twai_message_t mensajeCAN;
-  const bool ID_29bits=true;
-  uint8_t buffer[8];
-  if(contador>=10){
-    contador=0;
-    //cada 1000msg
-    send_canbus_message(0x00111200, parseJK_message_0x00111200(buffer, &jk_bms_battery_info), 8, ID_29bits);
-    send_canbus_message(0x00111300, parseJK_message_0x00111300(buffer, &jk_bms_battery_info), 7, ID_29bits);
-    send_canbus_message(0x00140100, parseJK_message_0x00140100(buffer, &jk_bms_battery_info), 8, ID_29bits);
-    send_canbus_message(0x00140200, parseJK_message_0x00140200(buffer, &jk_bms_battery_info), 4, ID_29bits);
-    send_canbus_message(0x00140300, parseJK_message_0x00140300(buffer, &jk_bms_battery_info), 8, ID_29bits);
-    send_canbus_message(0x00140400, parseJK_message_0x00140400(buffer, &jk_bms_battery_info), 6, ID_29bits);
-    //send_canbus_message(0x00140500, parseJK_message_0x00140500(buffer, &jk_bms_battery_info), 6, ID_29bits);
-    if(configuracion.comunicarSerialDebug1){
-      Serial.printf("SEND-CAN Batrium2(%.3f)\n",millis()/1000.0);
-    }
-  }
-  //cada 100msg
-  send_canbus_message(0x00111100, parseJK_message_0x00111100(buffer, &jk_bms_battery_info), 6, ID_29bits);
-  send_canbus_message(0x00111500, parseJK_message_0x00111500(buffer, &jk_bms_battery_info), 8, ID_29bits);
-  contador++;
-}
 
 /*Estable los valores de carga descarga diferentes a la JKBMS si se han configurado*/
 void ajustarVoltajeCargaDescarga(){
@@ -650,70 +557,8 @@ void controlCargaDescarga(){
   
 }
 
-/* función sin terminar, volorar su uso, jkbms calcula soc con su contador de ah */
-void actualizarContadorEnergia(){
-  uint32_t cellAH=jk_bms_battery_info.battery_cell_capacity;
-  uint16_t current=jk_bms_battery_info.battery_status.battery_current * 10; // (+)carga (-)descarga unit:10mA
-  uint16_t C100=cellAH *10;   // 230AH 1C=230A  230*1000=230000ma 1% = 230000/100= 2300
-  uint16_t cells_Vavrg=jk_bms_battery_info.cell_Vavrg;
-  uint8_t  soc=jk_bms_battery_info.battery_status.battery_soc;
-  if(configuracion.bateria.cargado_total){
-    
-    return;
-  }
 
-  if(current>=0  &&  current<C100  &&  cells_Vavrg>=configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_95]){
-    configuracion.bateria.cargado_total=true;
-    // si sube la tensión sube el soc y los AH absorvidos por la bateria
-    //se aplica correccion del soc
-    for(int i=CELL_SOC::SOC_95; i < CELL_SOC::SOC_COUNT; i++){
-      if(cells_Vavrg >= configuracion.bateria.calibracion.voltageCell[i]){
-        meter.miliamperioSegundo=cellAH*1000*3600*valorPorciento[i]/100; //Ah*1000= mAh   mAh *60m * 60sg= mAsg *%SOC
-        //TODO aplicar ajuste en función del SOH, si está el número de ciclos cerca del final se aplicara 80% de capacidad inicial
-      }
-    }
-
-  }else{
-    configuracion.bateria.cargado_total=false;
-    meter.miliamperioSegundo += current * FREQ_MUESTREO;  // * segundos de muestreo a la bms jk 
-  }
-} 
-
-/* función sin terminar-depurar,  NO USAR */
-/* no funciona bien diferente tensión carga/reposo/descarga para el mismo soc*/
-void ajustarSOC(){
-    uint8_t socJK=jk_bms_battery_info.battery_status.battery_soc;
-    uint16_t current=jk_bms_battery_info.battery_status.battery_current;
-    uint16_t cell_Vavrg=jk_bms_battery_info.cell_Vavrg;
-    // esta en el medio de la curva?
-    if((socJK < 80 && socJK > 15)){
-      //TODO: calcular por contador de energía
-
-    }else{
-      //calcular por voltaje
-      for(int i=0; i < CELL_SOC::SOC_COUNT; i++){
-            if(cell_Vavrg >= configuracion.bateria.calibracion.voltageCell[i]){
-              socJK=valorPorciento[i];
-            }
-          }
-    }
-
-    // en caso de que el SOC esté entre 15 y 80 por mal cálculo de la jk 
-    //por ejemplo en los primeros ciclos se ajusta con voltaje
-    if(cell_Vavrg <= configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_15]  ||
-       cell_Vavrg >= configuracion.bateria.calibracion.voltageCell[CELL_SOC::SOC_80] ){
-          
-          for(int i=0; i < CELL_SOC::SOC_COUNT; i++){
-            if(cell_Vavrg >= configuracion.bateria.calibracion.voltageCell[i]){
-              socJK=valorPorciento[i];
-            }
-          }
-       }
-
-    jk_bms_battery_info.battery_status.battery_soc=socJK;
-}
-
-/* devuelve indices de posición, donde esta el soc con, respecto a un escala definada en una array ascendente*/
+/* devuelve indices de posición, en el rango donde se necuentra el valor de soc, en un escala definada en una array de valores ascendente*/
 uint8_t * getIndexLimit(uint16_t soc, uint8_t *indexLimit, uint16_t * arrayEscalaAscnd, uint16_t sizearrayEscalaAscnd){
   
   for(int i=0; i < sizearrayEscalaAscnd; i++){
@@ -805,4 +650,21 @@ void bajaCapacidad(){
   if(jk_bms_battery_info.battery_status.battery_soc < configuracion.bateria.nivelSOCbajo){
     jk_bms_battery_info.battery_alarms.low_capacity=true;
   }
+}
+
+/* Función sin terminar, los comandos recibidos por MQTT modifican el comportamiento*/
+void procesarComandoMQTT(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total){
+    if(configuracion.comunicarSerialDebug2){
+      Serial.printf("TOPIC: %s\nDATA: %s\n", topic,payload );
+    }
+    DynamicJsonDocument docjson(4096);
+    deserializeJson(docjson, payload);
+    
+    if(docjson.containsKey("stopCarga")){
+      String text="";
+      if(docjson["stopCarga"]==0)text="Parar la descarga";  //false || 0  
+      else text="Continar la descarga";  //1 | true | "0"
+      if(configuracion.comunicarSerialDebug2)Serial.println(text);
+    }  
+
 }

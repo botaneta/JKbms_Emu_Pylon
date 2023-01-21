@@ -29,7 +29,7 @@
     /*border: 1px solid red;*/
 }
 
-.cabecera .menu a{
+.cabecera  a{
     top: 50%;
     color:rgb(196, 196, 196);
     font-weight: bold;
@@ -43,7 +43,7 @@
     /* border: 1px solid red; */
 }
 
-.cabecera .menu a:hover{   
+.cabecera  a:hover{   
     color: white;
 }
 
@@ -152,6 +152,12 @@ body{
     margin:0.5em;
     text-align:center; 
 }
+
+#ajustes_div h3 {
+    width:300px;
+    margin: 1em auto;
+    font-family: Arial, Helvetica, sans-serif;
+}
  
 
 form {
@@ -209,4 +215,26 @@ input[type='submit']{
 
 #protocolocan {
     margin-top:0.25em;
+}
+
+#actualizacionota {
+    width: 360px;
+    margin:auto;
+    margin-top: 2em;
+}
+
+#actualizacionota a {
+    color:rgb(196, 196, 196);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bold;
+    font-size: large;
+    text-decoration: none;
+    padding-left: 2em;
+    padding-right: 0.5em;
+    text-align: center;
+    
+}
+
+#actualizacionota a:hover {
+    color: white;
 }

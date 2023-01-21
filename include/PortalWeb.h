@@ -42,15 +42,12 @@ class PortalWeb {
 
    // static void salvarAjustes(AsyncWebServerRequest *request);
     
-    static void salvarIntegracion(AsyncWebServerRequest *request);
     static void salvarrs485(AsyncWebServerRequest *request);
     static void salvarmodbusinversor(AsyncWebServerRequest *request);
     static void salvarcanbus(AsyncWebServerRequest *request);
-    static void salvarprotocolocan(AsyncWebServerRequest * request);
     static void salvarserialdebug(AsyncWebServerRequest *request);
     static void salvarmqtt(AsyncWebServerRequest *request);
     static void salvarinfluxdb(AsyncWebServerRequest *request);
-    static void salvarpylonHV(AsyncWebServerRequest *request);
     static void salvarrampadescarga(AsyncWebServerRequest *request);
     static void salvarrampacarga(AsyncWebServerRequest *request);
     static void salvarlimitesVoltajes(AsyncWebServerRequest *request);

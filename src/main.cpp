@@ -1,29 +1,24 @@
 #include <Arduino.h>
-//#include <string>
-//#include "driver/i2c.h"
-#include "freertos/task.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/queue.h"
-#include "freertos/timers.h"
-#include <DNSServer.h>
-#include "ESPAsyncWebServer.h"
-
-
-#include "AsyncElegantOTA.h"
-
-
-#include "utilidades.h"
-#include "configuracion.h"
-#include "esp_log.h"
-#include "PortalWeb.h"
-#include "SPIFFS.h"
-#include "driver/twai.h"  //Two Wire Automovile Interface    CAN BUS
 #include <EEPROM.h>
-#include "jk_bms_485.h"
-#include "tareas.h"
+#include <SPIFFS.h>
 #include <ModbusClientTCPasync.h>
 #include <ArduinoJson.h>
 #include <AsyncMqttClient.h> 
+#include <freertos/task.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+#include <freertos/timers.h>
+#include <DNSServer.h>
+#include <ESPAsyncWebServer.h>
+#include <AsyncElegantOTA.h>
+#include <driver/twai.h>  //Two Wire Automovile Interface    CAN BUS
+#include <time.h>
+#include "utilidades.h"
+#include "configuracion.h"
+#include "PortalWeb.h"
+#include "jk_bms_485.h"
+#include "tareas.h"
+//#include "esp_log.h"
 
 
              
@@ -34,6 +29,7 @@
 #define VERSION                 "2022_12_16_versionV1.0"
 
 
+const char* ntpServer = "pool.ntp.org";
 
 struct METER meter{};
 //Estructura de Datos del bms JK
@@ -160,7 +156,7 @@ void  setupMqtt(){
   IPAddress ipMqtt(configuracion.ipmqtt[0], configuracion.ipmqtt[1], configuracion.ipmqtt[2], configuracion.ipmqtt[3]);
   mqtt.setServer(ipMqtt, configuracion.portmqtt);
   mqtt.setCredentials(configuracion.usermqtt, configuracion.passmqtt);
-  mqtt.connect();
+  
 }
 
 
@@ -218,7 +214,6 @@ void wifiModeStation() {
   // WiFi.mode(WIFI_OFF);
   WiFi.mode(WIFI_STA);
   // Connect
-  
   Serial.printf("Conectando a la WIFI: %s pass: %s\n", configuracion.ssid1, configuracion.pass1);
   WiFi.begin(configuracion.ssid1, configuracion.pass1);
   // Wait
@@ -351,6 +346,11 @@ void setup(){
   delay(250);
   
   
+  //MQTT
+  if (configuracion.wifiConfigured==true){ 
+    setupMqtt();
+    Serial.println("Configurado broker MQTT");
+  }
 
   Serial.println("Iniciando CANBUS...");
   setupCanbus();
@@ -362,11 +362,6 @@ void setup(){
     delay(300); 
   }
   
-  //MQTT
-  if (configuracion.wifiConfigured==true){ 
-    setupMqtt();
-    Serial.println("Configurado servicio MQTT");
-  }
   
 }
 

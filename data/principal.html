@@ -16,10 +16,10 @@
         <img src="logoBlack68.png"> 
         <div class="menu">
             
-            <a href="#" id="clickHome" onclick="clickHome();">Home</a>
-            <a href="#" id="clickAjustes" onclick="clickAjustes();">Settings</a>
-            <a href="#" id="clickReglas" onclick="clickReglas();">Rules</a>
-            <a href="#" id="clickAcercade" onclick="clickAcercade();">About</a>
+            <a href="#" id="clickHome" onclick="clickHome();">Principal</a>
+            <a href="#" id="clickAjustes" onclick="clickAjustes();">Ajustes</a>
+            <a href="#" id="clickReglas" onclick="clickReglas();">Reglas</a>
+            <a href="#" id="clickAcercade" onclick="clickAcercade();">Acerca de</a>
             
         </div>
     </div>
@@ -74,11 +74,8 @@
         
     </div>
     
-    <div id="ajustes_div" style="display: none;">    
-        <div class="checkbox_div">
-           
-            <h3>Configura los servicios de comunicación  y pulsa guardar</h3>
-        </div>
+    <div id="ajustes_div" style="display: none;">       
+        <h3>Configuración de los servicios de comunicación</h3>
         <form action="salvarrs485" name="" method="post">
              <div class="checkbox_div">
                 <label for="check_enable_jkrs485">JK RS485</label>
@@ -91,27 +88,14 @@
         <form action="salvarcanbus"  name="" method="POST">
             <div class="checkbox_div">
                 <label for="check_enable_can">CAN BUS</label>
-                <input class="checkbox" type="checkbox" id="check_enable_can" name="check-enable-can"  value="1"  %CHECK_CAN%><br>
-                <input class="button" type="submit" value="Guardar">
-            </div>
-        </form>
-        <br>
-      <!--  <form action="salvarpylonHV"  name="" method="POST">
-            <div class="checkbox_div">
-                <label for="check-enable-pylonHV">Emulated Pylontech HV</label>
-                <input class="checkbox" type="checkbox" id="check-enable-pylonHV" name="check-enable-pylonHV"  value="1"  %CHECK_PYLON_HV%><br>
-                <input class="button" type="submit" value="Guardar">
-            </div>
-        </form> 
-        <br> -->
-        <form action="salvarprotocolocan" method="POST">
-            <div class="checkbox_div">
+                <input class="checkbox" type="checkbox" id="check_enable_can" name="check-enable-can"  value="1"  %CHECK_CAN%>
+                <br>
+                <p></p>
                 <label for="protocolocan">PROTOCOLO CAN BUS</label>
                 <select id="protocolocan" name="protocolocan">
                     <option value="NoConfigurado" >NO CONFIGURADO</option>
                     <option value="PylonLowVoltage" %SELECT_PYLON_LV%>Pylontech Low Voltage</option>
                     <option value="PylonHighVoltage" %SELECT_PYLON_HV%>Pylontech High Voltage</option>
-                    <option value="Batrium" %SELECT_BATRIUM%>Batrium</option>
                     <option value="Reservado1" %SELECT_RESERVADO1%>Reservado1</option>
                     <option value="Reservado2" %SELECT_RESERVADO2%>Reservado2</option>
                 </select><br>
@@ -119,6 +103,7 @@
             </div>
         </form>
         <br>
+        <!--
         <form action="salvarmodbusinversor" name="" method="POST">
             <div class="checkbox_div">
                 <label for="check_enable_modbus">MODBUS</label>
@@ -133,22 +118,9 @@
 				<input class="button" type="submit" value="Guardar">	
             </div>			
 		</form>	
-        <br>    
-        <form action="salvarserialdebug" method="POST">
-            <div class="checkbox_div">
-                <label for="check_enable_serial">Serial debug
-                    <input class="checkbox" type="checkbox" id="check_enable_serial" name="check-enable-serial"  value="1"  %CHECK_SERIAL% >
-                </label></br>
-                <label for="check_enable_serial1">Serial debug1
-                    <input class="checkbox" type="checkbox" id="check_enable_serial1" name="check-enable-serial1"  value="1"  %CHECK_SERIAL1% >
-                </label></br>
-                <label for="check_enable_serial2">Serial debug2
-                    <input class="checkbox" type="checkbox" id="check_enable_serial2" name="check-enable-serial2"  value="1"  %CHECK_SERIAL2% >
-                </label></br>
-                <input class="button" type="submit" value="Guardar">
-            </div>
-        </form>
-        <br>
+        <br>  
+        -->  
+        
         <form action="salvarmqtt" method="POST">
             <div class="checkbox_div">
                 <label for="check_enable_mqtt">MQTT</label>
@@ -196,13 +168,28 @@
                 <input class="button" type="submit" value="Guardar">
             </div>
         </form>    
-        -->    
+        --> 
+        <form action="salvarserialdebug" method="POST">
+            <div class="checkbox_div">
+                <label for="check_enable_serial">Serial debug
+                    <input class="checkbox" type="checkbox" id="check_enable_serial" name="check-enable-serial"  value="1"  %CHECK_SERIAL% >
+                </label></br>
+                <label for="check_enable_serial1">Serial debug1
+                    <input class="checkbox" type="checkbox" id="check_enable_serial1" name="check-enable-serial1"  value="1"  %CHECK_SERIAL1% >
+                </label></br>
+                <label for="check_enable_serial2">Serial debug2
+                    <input class="checkbox" type="checkbox" id="check_enable_serial2" name="check-enable-serial2"  value="1"  %CHECK_SERIAL2% >
+                </label></br>
+                <input class="button" type="submit" value="Guardar">
+            </div>
+        </form>
+        <br>   
             
         
     </div>   
     
     <div id="reglas_div" style="display:none;">
-        <h3>Configuración de rampas  carga y descarga</h3>
+        <h3>Configuración de límites de tensión y rampas de carga y descarga</h3>
         <form method="POST" action="salvarlimitesvoltajes">
             <div class="checkbox_div">
                 <label for="checkcustomtension">
@@ -361,6 +348,10 @@
  
 
     <div id="acercade_div" style="display:none;">
+
+        <div id="actualizacionota">
+            <a href="./update">Actualización de firmware</a>
+        </div>
     </div>
 
 </div>

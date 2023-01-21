@@ -136,24 +136,18 @@ void PortalWeb::sendFailure(AsyncWebServerRequest *request)
 
 void PortalWeb::salvarcanbus(AsyncWebServerRequest * request){
     _config->comunicarCAN=false;
+    _config->protocoloCanBus=NO_CONFIGURADO;
     if(request->hasParam("check-enable-can", true)){  //method POST true
         AsyncWebParameter * p=request->getParam("check-enable-can", true);
         if(p->value() =="1"){
             _config->comunicarCAN=true;
         }
     }
-    saveConfigIntoEEPROM();
-    request->redirect("/ajustes");
-}
-
-void PortalWeb::salvarprotocolocan(AsyncWebServerRequest * request){
-    _config->protocoloCanBus=NO_CONFIGURADO;
     if(request->hasParam("protocolocan", true)){
         String protocolo=request->getParam("protocolocan", true)->value();
         if(protocolo.equals("NoConfigurado"))_config->protocoloCanBus=NO_CONFIGURADO;
         if(protocolo.equals("PylonLowVoltage"))_config->protocoloCanBus=PYLON_LV;
         if(protocolo.equals("PylonHighVoltage"))_config->protocoloCanBus=PYLON_HV;
-        if(protocolo.equals("Batrium"))_config->protocoloCanBus=BATRIUM;
         if(protocolo.equals("Reservado1"))_config->protocoloCanBus=RESERVADO1;
         if(protocolo.equals("Reservado2"))_config->protocoloCanBus=RESERVADO2;
     }
@@ -280,16 +274,6 @@ void PortalWeb::salvarserialdebug(AsyncWebServerRequest * request){
     request->redirect("/ajustes");
 }
 
-void PortalWeb::salvarpylonHV(AsyncWebServerRequest *request){
-    _config->pylontechHV=false;
-    if(request->hasParam("check-enable-pylonHV", true)){
-        if(request->getParam("check-enable-pylonHV", true)->value() =="1"){
-            _config->pylontechHV=true;
-        }
-    }
-    saveConfigIntoEEPROM();
-    request->redirect("/ajustes");
-}
 
 void PortalWeb::salvarrampadescarga(AsyncWebServerRequest *request){
    
@@ -528,16 +512,12 @@ String PortalWeb::procesarAjustes(const String &var){
     // canbus
     if(var == "CHECK_CAN"  && _config->comunicarCAN==true) return "checked";
 
-    //pylontech high voltage
-    if(var == "CHECK_PYLON_HV" && _config->pylontechHV==true) return "checked";
-
     //protocolo
     if(var.startsWith("SELECT")){
         switch(_config->protocoloCanBus){
             case NO_CONFIGURADO: return""; break;
             case PYLON_LV: if(var == "SELECT_PYLON_LV")return "selected"; break;
             case PYLON_HV: if(var == "SELECT_PYLON_HV")return "selected"; break;
-            case BATRIUM: if(var == "SELECT_BATRIUM")return "selected"; break;
             case RESERVADO1: if(var == "SELECT_RESERVADO1")return "selected"; break;
             case RESERVADO2: if(var == "SELECT_RESERVADO2")return "selected"; break;
             default: return "";
@@ -779,9 +759,7 @@ void PortalWeb::setupAccessPoint(AsyncWebServer *webserver,  Config * config, JK
     _server->on("/salvarinfluxdb", HTTP_POST, salvarinfluxdb);
     _server->on("/salvarmqtt", HTTP_POST, salvarmqtt);
     _server->on("/salvarcanbus", HTTP_POST, salvarcanbus);
-    _server->on("/salvarprotocolocan", HTTP_POST, salvarprotocolocan);
     _server->on("/salvarserialdebug", HTTP_POST, salvarserialdebug);
-    _server->on("/salvarpylonHV", HTTP_POST, salvarpylonHV);
     _server->on("/salvarrampadescarga",HTTP_POST, salvarrampadescarga);
     _server->on("/salvarrampacarga", HTTP_POST, salvarrampacarga);
     _server->on("/salvarlimitessoc", HTTP_POST, salvarlimitesSOC);
