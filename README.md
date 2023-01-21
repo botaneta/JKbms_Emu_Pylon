@@ -25,6 +25,8 @@ ESP32 (GPIO33)------CAN-TX----------(tx)TJA1050(CAN-H)-----------(CAN-H)Inversor
 ESP32 (GPIO32)------CAN-RX----4k7---(rx)TJA1050(CAN-L)-----------(CAN-L)Inversor<br>
 ESP32 GND--------------------------(gnd)TJA1050<br>
 ESP32 +5v--------------------------(+5v)TJA1050<br>
+<br>
+<img src="https://github.com/botaneta/JKbms_Emu_Pylon/blob/master/imagenes/conexionado.jpg">
 
 # Instrucciones
 
@@ -66,5 +68,11 @@ Se incorpora actualización del firmware mediante OTA, usando AsyncElegantOTA<br
 <li>https://github.com/pablozg/freeds copiar partes de su código y adaptarlo a mi proyecto</li> 
 <li>https://github.com/ayushsharma82/AsyncElegantOTA librería OTA</li>
 <ul>
+
+# Imagenes
+<ul align="center">
+<li><img src="https://github.com/botaneta/JKbms_Emu_Pylon/blob/master/imagenes/"></li>
+</ul> 
+
   
 
