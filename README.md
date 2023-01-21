@@ -72,7 +72,7 @@ Se incorpora actualización del firmware mediante OTA, usando AsyncElegantOTA<br
 # Imagenes
 <ul align="center" style="list-style: none;">
 PROTOTIPO 1
-<li style="list-style: none;"><img src="https://github.com/botaneta/JKbms_Emu_Pylon/blob/master/imagenes/prototipo1.jpg"></li>
+<li><img src="https://github.com/botaneta/JKbms_Emu_Pylon/blob/master/imagenes/prototipo1.jpg"></li>
 </ul> 
 
   
