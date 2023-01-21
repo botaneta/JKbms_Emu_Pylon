@@ -28,7 +28,7 @@ ESP32 +5v--------------------------(+5v)TJA1050<br>
 
 # Instrucciones
 
-Pruebas con módulo ESP32 DevKit v1, JK-B2A24S150P<br>
+Pruebas realizadas con módulo ESP32 DevKit v1, bms JK-B2A24S150P, inversor Ingeteam Sun Storage<br>
 En el primer inicio es módulo ESP32 crea el punto de acceso WiFi "JKBMS_EMU_PYLONTECH" el led de estado azul parpadea<br>
 En la página web de configuración del Wifi local seleccionar SSID e introducir su password, una vez conectado a la red wifi local el led de estado azul permanece fijo<br>
 Buscar ip del esp32 en wifi local y acceder a su página web para configurar.<br>
@@ -44,6 +44,7 @@ Se prueba con exito la perdida de conexión CAN y reconexión con el inversor<br
 Se añade publicación de mensaje MQTT con el estado de la batería<br>
 Se puede configurar los voltajes de carga y descarga diferentes a los proporcionados por el bms JK<br>
 Ahora las rampas de carga/descarga se pueden establecer 5reglas para adaptar la intensidad en función del SOC o voltaje medio de celda<br>
+Se incorpora actualización del firmware mediante OTA, usando AsyncElegantOTA<br>
 
 
 # TODO List
@@ -62,7 +63,8 @@ Ahora las rampas de carga/descarga se pueden establecer 5reglas para adaptar la 
 <li>https://secondlifestorage.com/index.php?threads/jk-b1a24s-jk-b2a24s-active-balancer.9591/</i>
 <li>https://github.com/maxx-ukoo/jk-bms2pylontech copiar partes de su código y adaptarlo a mi proyecto</li>
 <li>https://github.com/stuartpittaway/diyBMSv4ESP32 copiar partes de su código y adaptarlo a mi proyecto</li>
-<li>https://github.com/pablozg/freeds copiar partes de su código y adaptarlo a mi proyecto</li>
+<li>https://github.com/pablozg/freeds copiar partes de su código y adaptarlo a mi proyecto</li> 
+<li>https://github.com/ayushsharma82/AsyncElegantOTA librería OTA</li>
 <ul>
   
 
