@@ -75,8 +75,8 @@ int8_t getTemperature(const int16_t value) {
  * @brief Solicitud de datos a la bms JK
  * 
  */
-void Request_JK_Battery_485_Status_Frame() {	
-	
+void Request_JK_Battery_485_Status_Frame() {
+		
 	for(int i=0; i<21; i++){
 		Serial2.write(request_Status_Frame[i]);
 		//Serial.printf(" %2x ", request_Status_Frame[i]);
@@ -403,7 +403,7 @@ void Parse_JK_Battery_485_Status_Frame(uint8_t *data) {
 	switch (data[pos +1]){
 		case 0 : jk_bms_battery_info.chemical=LiFePo4; break;
 		case 1 : jk_bms_battery_info.chemical=LiIon; break;
-		case 3 : jk_bms_battery_info.chemical=LTO; break;
+		case 2 : jk_bms_battery_info.chemical=LTO; break;
 		default : jk_bms_battery_info.chemical=AcidLead; break;
 
 	};
