@@ -93,9 +93,11 @@ void PortalWeb::handleNotFound(AsyncWebServerRequest *request){
 
 
 void PortalWeb::salvarWiFi(AsyncWebServerRequest *request){
-    Serial.println("Obtener argumentos y grabar");
-    strcpy(_config->ssid1, request->urlDecode(request->arg("wifiConfigureds")).c_str());
-    strcpy(_config->pass1, request->urlDecode(request->arg("password")).c_str());
+    Serial.println("Obtener argumentos y grabar"); 
+    String ssid =request->arg("wifiConfigureds");
+    String password = request->arg("password");
+    ssid.toCharArray(_config->ssid1, sizeof(_config->ssid1));
+    password.toCharArray(_config->pass1, sizeof(_config->pass1));
     _config->wifiConfigured = true;
     saveConfigIntoEEPROM();
     Serial.println("DATA SAVED!!!!, RESTARTING!!!!");
@@ -694,7 +696,7 @@ void PortalWeb::setupAccessPoint(AsyncWebServer *webserver,  Config * config, JK
     _server->on("/", HTTP_GET, handleRoot);
     _server->on("/index.html", HTTP_GET, handleRoot);
     _server->on("/comando", HTTP_GET, handleCommand);
-    _server->on("/savedatawifi", HTTP_GET, salvarWiFi);
+    _server->on("/savedatawifi", HTTP_POST, salvarWiFi);
     _server->on("/generate_204", handleRoot);
     _server->on("/principal", HTTP_GET, paginaPrincipal);
 
