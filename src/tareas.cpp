@@ -607,11 +607,14 @@ void ajustarAmperiosCargaDescarga(){
   uint16_t rampaEscala[5]={0};
   uint16_t soc=jk_bms_battery_info.battery_status.battery_soc;
   uint16_t avrcells=jk_bms_battery_info.cell_Vavrg;
+  uint16_t cell_Vmax=jk_bms_battery_info.cells_voltage[jk_bms_battery_info.cell_number_vmax-1].cell_voltage;
+  uint16_t cell_Vmin=jk_bms_battery_info.cells_voltage[jk_bms_battery_info.cell_number_vmin-1].cell_voltage;
   uint16_t valor=0;
   uint8_t escala;
   //rampa carga 
   if(configuracion.bateria.rampaCarga_mV){
-      valor=avrcells;    
+      //valor=avrcells; 
+      valor=cell_Vmax;   //prueba para evitar sobrepicos al balancear celdas en la parte alta
       escala=mV;
   }else{
       valor=soc;
@@ -629,7 +632,8 @@ void ajustarAmperiosCargaDescarga(){
 
   //rampa descarga
   if(configuracion.bateria.rampaDescarga_mV){
-      valor=avrcells;    
+      //valor=avrcells;    
+      valor=cell_Vmin;
       escala=mV;
   }else{
       valor=soc;
