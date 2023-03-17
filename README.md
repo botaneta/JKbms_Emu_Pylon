@@ -21,8 +21,8 @@ JK-bms RX----------GPIO17(TXD_2) ESP32 <br>
 JK-bms GND-------------------GND ESP32 <br>
 
 <br>
-ESP32 (GPIO33)------CAN-TX----------(tx)TJA1050(CAN-H)-----------(CAN-H)Inversor<br>
-ESP32 (GPIO32)------CAN-RX----4k7---(rx)TJA1050(CAN-L)-----------(CAN-L)Inversor<br>
+ESP32 (GPIO23)------CAN-TX----------(tx)TJA1050(CAN-H)-----------(CAN-H)Inversor<br>
+ESP32 (GPIO22)------CAN-RX----4k7---(rx)TJA1050(CAN-L)-----------(CAN-L)Inversor<br>
 ESP32 GND--------------------------(gnd)TJA1050<br>
 ESP32 +5v--------------------------(+5v)TJA1050<br>
 <br>
