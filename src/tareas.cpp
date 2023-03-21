@@ -251,7 +251,8 @@ void envioCAN_task(void * parameters){
 
     //PYLON-LV
     if(configuracion.protocoloCanBus==PYLON_LV){    
-        enviarCANpylonLV();     
+        while(xQueueReceive(colaLecturaCAN_handle, &mensajeCAN, xDelay100msg));  //vaciado de colaLecturaCAN de mensajes respuesta inversor  
+        enviarCANpylonLV();
         if(configuracion.comunicarSerialDebug1){
           Serial.printf("SEND-CAN PylonLV(%.3f)\n",millis()/1000.0);
           mostrarMensajeCAN_pylonLV();
