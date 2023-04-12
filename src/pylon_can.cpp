@@ -64,25 +64,24 @@ uint8_t * parseJK_message_0x359(uint8_t * buffer, JK_bms_battery_info *jk_bms_ba
  * @return uint8_t* trama de 8 bytes
  */
 uint8_t * parseJK_message_0x351(uint8_t * buffer, JK_bms_battery_info *jk_bms_battery_info){ 
-    uint8_t soc=jk_bms_battery_info->battery_status.battery_soc;
     // byte0 es el byte menos significativo y el byte1 el más significativo
     // tensión maxima de carga 
-    uint16_t data=jk_bms_battery_info->battery_limits.battery_charge_voltage;
-    data=data/10;  //jk unit 0.01V  pylon-can unit0.1V
-    buffer[0]= (uint8_t)(data & 0xFF);
-    buffer[1]=(uint8_t) (data >> 8 ); //desplazar byte superior
+    uint16_t voltage=jk_bms_battery_info->battery_limits.battery_charge_voltage;
+    voltage=voltage/10;  //jk unit 0.01V  pylon-can unit0.1V
+    buffer[0]= (uint8_t)(voltage & 0xFF);
+    buffer[1]=(uint8_t) (voltage >> 8 ); //desplazar byte superior
 
     //byte2-3 charge current limit signed 
     //jk unit 1A   pylon unit 0.1A signed
-    int16_t data=jk_bms_battery_info->battery_limits.battery_charge_current_limit*10;
-    buffer[2]= (uint8_t)(data & 0xFF);
-    buffer[3]=(uint8_t) (data >> 8 ); //desplazar byte superior
+    int16_t current=jk_bms_battery_info->battery_limits.battery_charge_current_limit*10;
+    buffer[2]= (uint8_t)(current & 0xFF);
+    buffer[3]=(uint8_t) (current >> 8 ); //desplazar byte superior
 
     //byte4-5 discharge current limit signed 
     //jk unit 1A   pylon unit 0.1A signed
-    data=jk_bms_battery_info->battery_limits.battery_discharge_current_limit*-10;
-    buffer[4]= (uint8_t)(data & 0xFF);
-    buffer[5]=(uint8_t) (data >> 8 ); //desplazar byte superior
+    current=jk_bms_battery_info->battery_limits.battery_discharge_current_limit*-10;
+    buffer[4]= (uint8_t)(current & 0xFF);
+    buffer[5]=(uint8_t) (current >> 8 ); //desplazar byte superior
 
     buffer[6]=0x00;
     buffer[7]=0x00;
