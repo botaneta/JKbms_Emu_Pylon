@@ -72,17 +72,15 @@ uint8_t * parseJK_message_0x351(uint8_t * buffer, JK_bms_battery_info *jk_bms_ba
     buffer[0]= (uint8_t)(data & 0xFF);
     buffer[1]=(uint8_t) (data >> 8 ); //desplazar byte superior
 
-    //byte2-3 charge current limit signed (ingeteam 66A)
+    //byte2-3 charge current limit signed 
     //jk unit 1A   pylon unit 0.1A signed
-    data=660;
-    data=jk_bms_battery_info->battery_limits.battery_charge_current_limit*10;
+    int16_t data=jk_bms_battery_info->battery_limits.battery_charge_current_limit*10;
     buffer[2]= (uint8_t)(data & 0xFF);
     buffer[3]=(uint8_t) (data >> 8 ); //desplazar byte superior
 
-    //byte4-5 discharge current limit signed (ingeteam 66A)
+    //byte4-5 discharge current limit signed 
     //jk unit 1A   pylon unit 0.1A signed
-    data=660;
-    data=jk_bms_battery_info->battery_limits.battery_discharge_current_limit*10;
+    data=jk_bms_battery_info->battery_limits.battery_discharge_current_limit*-10;
     buffer[4]= (uint8_t)(data & 0xFF);
     buffer[5]=(uint8_t) (data >> 8 ); //desplazar byte superior
 

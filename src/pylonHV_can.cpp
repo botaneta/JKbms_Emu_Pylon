@@ -113,11 +113,11 @@ uint8_t * parseJK_message_0x4220(uint8_t * buffer, JK_bms_battery_info * jkbms){
     uint16_t intensidad=jkbms->battery_limits.battery_charge_current_limit;
     
 
-    intensidad=30000+intensidad*10u; //jk unit 1A pylon 0.1A offset:-3000A
+    intensidad=30000 + intensidad*10u; //jk unit 1A pylon 0.1A offset:-3000A (offset + charging current)
     buffer[4]=(uint8_t)(intensidad & 0xFF); //lsb
     buffer[5]=(uint8_t)(intensidad >> 8); //msb intensiadad maxima de carga
     intensidad=jkbms->battery_limits.battery_discharge_current_limit;
-    intensidad=30000+intensidad*10u; //jk uint 1A pylon 0.1A offset:-3000A
+    intensidad=30000 - intensidad*10u; //jk uint 1A pylon 0.1A offset:-3000A (offset - discharge current)
     buffer[6]=(uint8_t)(intensidad & 0xFF); //lsb
     buffer[7]=(uint8_t)(intensidad >> 8); //msb intensiadad maxima de descarga        
     return buffer;
