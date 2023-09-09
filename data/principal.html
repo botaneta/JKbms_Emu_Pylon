@@ -36,6 +36,7 @@
                             <tr><td id="batt_vol"></td><td id="batt_amp"><td id="batt_power"></td></tr>
                             <tr><td id="soc"></td><td id="soh"></td><td id="batt_cycle"></td></tr>
                             <tr><td id="cell_voltage_average"></td><td id="delta_cell_voltage"></td><td id="batt_ah_count"></td></tr>
+                            <tr><td id="cell_vmax"></td><td id="cell_vmin"></td><td id="charge_current_limit"></td></tr>
                         </table>
                     
                         <table id="tabla_celdas">
@@ -220,7 +221,7 @@
                 </label>
                 <br>
                 <label for="restartcargasoc">Restart carga SOC&emsp;&emsp;
-                    <div class="databox"><input type="number" value="%RESTART_CARGA_SOC%" id="restartcargasoc" name="restartcargasoc" min="0" max=100 size="4">&#37;</div>
+                    <div class="databox"><input type="number" value="%RESTART_CARGA_SOC%" id="restartcargasoc" name="restartcargasoc" min="0" max=101 size="4">&#37;</div>
                 </label>
                 <br>
                 <label for="restartdescargasoc">Restart descarga SOC&ensp;

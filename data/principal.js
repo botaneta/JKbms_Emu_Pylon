@@ -61,7 +61,10 @@ function rellenarDatosBateria(jsondoc){
 	document.getElementById("cell_voltage_average").innerText="Avrg cells: " + jsondoc["cell_voltage_average"] + "mV";
 	document.getElementById("delta_cell_voltage").innerText="Delta cells: " + jsondoc["delta_cell_voltage"] + "mV";
 	document.getElementById("batt_cycle").innerText="Cycles: " + jsondoc["cycles"];
-
+	document.getElementById("cell_vmax").innerText="Cell_max: " + jsondoc["cell_voltage_max"] + "mV";
+	document.getElementById("cell_vmin").innerText="Cell_min: " + jsondoc["cell_voltage_min"] + "mV";
+	document.getElementById("charge_current_limit").innerText="Limit charge: " + jsondoc["charge_amp_limit"] + "A";	
+	
 	let ncellmin=jsondoc["cell_number_vmin"];
 	let ncellmax=jsondoc["cell_number_vmax"];
 	

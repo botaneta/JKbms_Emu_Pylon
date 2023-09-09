@@ -73,7 +73,7 @@ void enviarCANpylonHVinfoSystem(bool ID_29bits);
 void mostrarMensajeCAN_pylonHV();
 void mostrarMensajeCAN_pylonLV();
 void procesarComandoMQTT(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
-
+void estabilizarAmperiosCargaDescarga();
 
 
 

@@ -8,7 +8,7 @@
 
 
 #define ONBOARD_LED_BLUE        GPIO_NUM_2 //2
-#define FREQ_MUESTREO           3 //cada 3segundos
+#define FREQ_MUESTREO           2 //cada 3segundos
 const TickType_t delayMuestreo = (1000 * FREQ_MUESTREO) / portTICK_PERIOD_MS; //peticiones cada 1000msg * muestreo
 
 
@@ -83,6 +83,7 @@ void parseoColaLecturaToJk_bms_battery_info_task(void * parameters){
               bajaCapacidad();
               ajustarVoltajeCargaDescarga();
               ajustarAmperiosCargaDescarga();
+              if(configuracion.comunicarSerialDebug2)estabilizarAmperiosCargaDescarga();
               controlCargaDescarga();
               contador=0;
               configuracion.errorComunicacionJK=false;
@@ -500,7 +501,7 @@ void enviarDatosMqtt_task(void * parameters){
       mqtt.clearQueue();
       mqtt.disconnect();
     }
-    vTaskDelay(delayMuestreo);  
+    vTaskDelay(delayMuestreo * 2);  
   }
 }
 
@@ -561,7 +562,8 @@ void controlCargaDescarga(){
 
 /* devuelve indices de posición, en el rango donde se necuentra el valor de soc, en un escala definada en una array de valores ascendente*/
 uint8_t * getIndexLimit(uint16_t soc, uint8_t *indexLimit, uint16_t * arrayEscalaAscnd, uint16_t sizearrayEscalaAscnd){
-  
+  const int8_t INF=0;
+  const int8_t SUP=1;
   for(int i=0; i < sizearrayEscalaAscnd; i++){
     
     if(soc < arrayEscalaAscnd[0]){
@@ -600,8 +602,8 @@ long interpolacion(long x, long in_min, long in_max, long out_min, long out_max)
 
 /* Modifica el valor de carga y descarga proporcionado por JKBMS para adaptarlo a la curva de carga*/
 void ajustarAmperiosCargaDescarga(){
-  const int INF=0;
-  const int SUP=1;
+  const int8_t INF=0;
+  const int8_t SUP=1;
   uint8_t indice[2]={0};
   uint16_t amperios=0;
   uint16_t rampaAmperios[5]={0};
@@ -615,7 +617,7 @@ void ajustarAmperiosCargaDescarga(){
   //rampa carga 
   if(configuracion.bateria.rampaCarga_mV){
       //valor=avrcells; 
-      valor=cell_Vmax;   //prueba para evitar sobrepicos al balancear celdas en la parte alta
+      valor=cell_Vmax;   //prueba para evitar sobrepicos al balancear celdas en la parte alta  
       escala=mV;
   }else{
       valor=soc;
@@ -649,6 +651,24 @@ void ajustarAmperiosCargaDescarga(){
                             rampaAmperios[indice[INF]], rampaAmperios[indice[SUP]]);
   jk_bms_battery_info.battery_limits.battery_discharge_current_limit=amperios;                      
   
+}
+
+void estabilizarAmperiosCargaDescarga(){
+  static uint16_t estabilizarAmperios[4]{};
+  static uint8_t indiceEstabilizador=0;
+
+  estabilizarAmperios[indiceEstabilizador]=jk_bms_battery_info.battery_limits.battery_charge_current_limit;
+  indiceEstabilizador++;
+  if(indiceEstabilizador>=4)indiceEstabilizador=0;
+
+  uint32_t avrgAmp=0;
+  for(int i=0; i < 4; i++){
+    avrgAmp += estabilizarAmperios[i];
+  }
+  avrgAmp = avrgAmp/4;
+  jk_bms_battery_info.battery_limits.battery_charge_current_limit=(uint16_t)avrgAmp;
+  
+
 }
 
 void bajaCapacidad(){
