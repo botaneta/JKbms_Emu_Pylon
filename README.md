@@ -45,7 +45,7 @@ Se prueba con exito el control ante un posible fallo de comunicación entre en e
 Se prueba con exito la perdida de conexión CAN y reconexión con el inversor<br>
 Se añade publicación de mensaje MQTT con el estado de la batería<br>
 Se puede configurar los voltajes de carga y descarga diferentes a los proporcionados por el bms JK<br>
-Ahora las rampas de carga/descarga se pueden establecer 5reglas para adaptar la intensidad en función del SOC o voltaje medio de celda<br>
+Ahora las rampas de carga/descarga se pueden establecer 5reglas para adaptar la intensidad en función del SOC o voltaje máximo de celda<br>
 Se incorpora actualización del firmware mediante OTA, usando AsyncElegantOTA<br>
 
 
