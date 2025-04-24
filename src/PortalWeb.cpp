@@ -140,8 +140,8 @@ void PortalWeb::salvarcanbus(AsyncWebServerRequest * request){
     _config->comunicarCAN=false;
     _config->protocoloCanBus=NO_CONFIGURADO;
     if(request->hasParam("check-enable-can", true)){  //method POST true
-        AsyncWebParameter * p=request->getParam("check-enable-can", true);
-        if(p->value() =="1"){
+        //CAMBIO AsyncWebParameter * p=;
+        if(request->getParam("check-enable-can", true)->value() =="1"){
             _config->comunicarCAN=true;
         }
     }
@@ -159,7 +159,6 @@ void PortalWeb::salvarcanbus(AsyncWebServerRequest * request){
 
 void PortalWeb::salvarmodbusinversor(AsyncWebServerRequest * request){
      _config->comunicarMODBUS=false;
-     
     if(request->hasParam("ipmodbus", true)  &&  request->hasParam("portmodbus", true)){
         String iptexto=request->getParam("ipmodbus", true)->value();
         uint8_t ipmodbus[4]={};
@@ -169,8 +168,8 @@ void PortalWeb::salvarmodbusinversor(AsyncWebServerRequest * request){
         _config->portmodbus=request->getParam("portmodbus", true)->value().toInt();
     }
     if(request->hasParam("check-enable-modbus", true)){
-        AsyncWebParameter * p=request->getParam("check-enable-modbus", true);
-        if(p->value() =="1"){
+        
+        if(request->getParam("check-enable-modbus", true)->value() =="1"){
             _config->comunicarMODBUS=true;
             
         }
