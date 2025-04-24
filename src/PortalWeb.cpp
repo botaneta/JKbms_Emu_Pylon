@@ -140,7 +140,6 @@ void PortalWeb::salvarcanbus(AsyncWebServerRequest * request){
     _config->comunicarCAN=false;
     _config->protocoloCanBus=NO_CONFIGURADO;
     if(request->hasParam("check-enable-can", true)){  //method POST true
-        //CAMBIO AsyncWebParameter * p=;
         if(request->getParam("check-enable-can", true)->value() =="1"){
             _config->comunicarCAN=true;
         }
