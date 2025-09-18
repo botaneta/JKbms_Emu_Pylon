@@ -10,7 +10,7 @@
 #include <freertos/timers.h>
 #include <DNSServer.h>
 #include <ESPAsyncWebServer.h>
-#include <AsyncElegantOTA.h>
+#include <ElegantOTA.h>
 #include <driver/twai.h>  //Two Wire Automovile Interface    CAN BUS
 #include <time.h>
 #include "utilidades.h"
@@ -340,7 +340,7 @@ void setup(){
       wifiModeStation();
   }
 
-  AsyncElegantOTA.begin(&webserver);    // Start AsyncElegantOTA
+  ElegantOTA.begin(&webserver);    // Start AsyncElegantOTA
   webserver.begin();
   Serial.println("Iniciado servidor web"); 
   delay(250);

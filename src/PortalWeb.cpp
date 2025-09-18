@@ -86,10 +86,19 @@ void PortalWeb::handleNotFound(AsyncWebServerRequest *request){
         case WebRequestMethod::HTTP_POST: peticion="POST"; break;
         default: peticion="Otro tipo"; break;
     }
-    Serial.printf("server.notfound triggered: %s method:%s  numero de parametros:%d\n", request->url().c_str(), peticion, nparam);
-    //Serial.println(request->url());       //This gives some insight into whatever was being requested   
+    //Serial.printf("server.notfound triggered: %s method:%s  numero de parametros:%d\n", request->url().c_str(), peticion, nparam);
+    String path = request->url();
+    if (path.length() > 0) {
+        Serial.printf("Redirigiendo a página: %s\n", path.c_str());
+    } else {
+        Serial.println("Redirigiendo a página desconocida");
+    }   
+    Serial.println(request->url());       //This gives some insight into whatever was being requested   
     request->redirect("/");
 }
+
+
+
 
 
 void PortalWeb::salvarWiFi(AsyncWebServerRequest *request){
