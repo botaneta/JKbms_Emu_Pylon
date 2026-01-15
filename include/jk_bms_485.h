@@ -81,7 +81,7 @@ struct JK_bms_battery_info {
 	uint16_t delta_cell_voltage;
 	uint32_t ID;
 	uint32_t battery_cell_capacity;
-	struct jk_bms_cell_voltage cells_voltage[24];
+	struct jk_bms_cell_voltage cells_voltage[32];
 	struct jk_bms_battery_status battery_status;
 	struct jk_bms_alarms battery_alarms;
 	struct jk_bms_limits battery_limits;

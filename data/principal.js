@@ -2,7 +2,8 @@
 
 var array_celdas_id=["celda1", "celda2", "celda3", "celda4", "celda5", "celda6", "celda7", "celda8",
 					"celda9", "celda10", "celda11", "celda12", "celda13", "celda14", "celda15", "celda16",
-					"celda17", "celda18", "celda19", "celda20", "celda21", "celda22", "celda23", "celda24"];
+					"celda17", "celda18", "celda19", "celda20", "celda21", "celda22", "celda23", "celda24", 
+					"celda25", "celda26", "celda27", "celda28", "celda29", "celda30", "celda31", "celda32"];
 
 
 var  opcionmenu=document.getElementById("opcionmenu");
